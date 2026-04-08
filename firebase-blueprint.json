@@ -1,0 +1,94 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "A user of the EcoPulse application.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "The user's unique ID." },
+        "email": { "type": "string", "format": "email", "description": "The user's email address." },
+        "displayName": { "type": "string", "description": "The user's display name." },
+        "photoURL": { "type": "string", "description": "The user's profile picture URL." },
+        "greenHours": { "type": "number", "description": "Total green hours earned." },
+        "role": { "type": "string", "enum": ["user", "admin"], "description": "The user's role." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "When the user was created." }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Initiative": {
+      "title": "Initiative",
+      "description": "An environmental initiative users can join.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Title of the initiative." },
+        "org": { "type": "string", "description": "Organization running the initiative." },
+        "type": { "type": "string", "enum": ["local", "global"], "description": "Type of initiative." },
+        "hours": { "type": "number", "description": "Green hours rewarded." },
+        "verified": { "type": "boolean", "description": "Whether the initiative is verified by WWF." },
+        "description": { "type": "string", "description": "Detailed description." },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "org", "type", "hours", "verified"]
+    },
+    "Challenge": {
+      "title": "Challenge",
+      "description": "A community challenge suggested by a user.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Title of the challenge." },
+        "description": { "type": "string", "description": "Description of the challenge." },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"], "description": "Approval status." },
+        "authorUid": { "type": "string", "description": "UID of the user who suggested it." },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "description", "status", "authorUid"]
+    },
+    "UserInitiative": {
+      "title": "UserInitiative",
+      "description": "Tracks a user's participation in an initiative.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "initiativeId": { "type": "string" },
+        "status": { "type": "string", "enum": ["joined", "completed"] },
+        "joinedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "initiativeId", "status"]
+    },
+    "Training": {
+      "title": "Training",
+      "description": "Eco-Academy training modules.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "duration": { "type": "string" },
+        "level": { "type": "string", "enum": ["Beginner", "Intermediate", "Advanced"] },
+        "provider": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "duration", "level", "provider"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Stores user profiles."
+    },
+    "/initiatives/{initiativeId}": {
+      "schema": { "$ref": "#/entities/Initiative" },
+      "description": "Stores available initiatives."
+    },
+    "/challenges/{challengeId}": {
+      "schema": { "$ref": "#/entities/Challenge" },
+      "description": "Stores community challenges."
+    },
+    "/user_initiatives/{userInitiativeId}": {
+      "schema": { "$ref": "#/entities/UserInitiative" },
+      "description": "Stores user participation records."
+    },
+    "/trainings/{trainingId}": {
+      "schema": { "$ref": "#/entities/Training" },
+      "description": "Stores training modules."
+    }
+  }
+}

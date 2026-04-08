@@ -1,0 +1,171 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: {userId}
+    // Fields:
+    //   - uid: string (required)
+    //   - email: string (required)
+    //   - displayName: string (optional)
+    //   - photoURL: string (optional)
+    //   - greenHours: number (optional)
+    //   - role: string (required, 'user' or 'admin')
+    //   - createdAt: timestamp (optional)
+    //
+    // Collection: initiatives
+    // Document ID: {initiativeId}
+    // Fields:
+    //   - title: string (required)
+    //   - org: string (required)
+    //   - type: string (required, 'local' or 'global')
+    //   - hours: number (required)
+    //   - verified: boolean (required)
+    //   - description: string (optional)
+    //   - createdAt: timestamp (optional)
+    //
+    // Collection: challenges
+    // Document ID: {challengeId}
+    // Fields:
+    //   - title: string (required)
+    //   - description: string (required)
+    //   - status: string (required, 'pending', 'approved', 'rejected')
+    //   - authorUid: string (required)
+    //   - createdAt: timestamp (optional)
+    //
+    // Collection: user_initiatives
+    // Document ID: {userInitiativeId}
+    // Fields:
+    //   - userId: string (required)
+    //   - initiativeId: string (required)
+    //   - status: string (required, 'joined' or 'completed')
+    //   - joinedAt: timestamp (optional)
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() &&
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+          (request.auth.token.email == "lpires1907@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    function isValidUser(data) {
+      return hasRequiredFields(['uid', 'email', 'role']) &&
+             data.uid is string && data.uid.size() > 0 && data.uid.size() < 100 &&
+             data.email is string && isValidEmail(data.email) && data.email.size() < 150 &&
+             data.role in ['user', 'admin'] &&
+             (!('displayName' in data) || (data.displayName is string && data.displayName.size() < 100)) &&
+             (!('photoURL' in data) || (data.photoURL is string && data.photoURL.size() < 500)) &&
+             (!('greenHours' in data) || (data.greenHours is number && data.greenHours >= 0)) &&
+             (!('createdAt' in data) || data.createdAt is timestamp);
+    }
+
+    function isValidInitiative(data) {
+      return hasRequiredFields(['title', 'org', 'type', 'hours', 'verified']) &&
+             data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
+             data.org is string && data.org.size() > 0 && data.org.size() < 100 &&
+             data.type in ['local', 'global'] &&
+             data.hours is number && data.hours >= 0 &&
+             data.verified is bool &&
+             (!('description' in data) || (data.description is string && data.description.size() < 2000)) &&
+             (!('createdAt' in data) || data.createdAt is timestamp);
+    }
+
+    function isValidChallenge(data) {
+      return hasRequiredFields(['title', 'description', 'status', 'authorUid']) &&
+             data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
+             data.description is string && data.description.size() > 0 && data.description.size() < 2000 &&
+             data.status in ['pending', 'approved', 'rejected'] &&
+             data.authorUid is string && data.authorUid.size() > 0 && data.authorUid.size() < 100 &&
+             (!('createdAt' in data) || data.createdAt is timestamp);
+    }
+
+    function isValidUserInitiative(data) {
+      return hasRequiredFields(['userId', 'initiativeId', 'status']) &&
+             data.userId is string && data.userId.size() > 0 && data.userId.size() < 100 &&
+             data.initiativeId is string && data.initiativeId.size() > 0 && data.initiativeId.size() < 100 &&
+             data.status in ['joined', 'completed'] &&
+             (!('joinedAt' in data) || data.joinedAt is timestamp);
+    }
+
+    function isValidTraining(data) {
+      return hasRequiredFields(['title', 'duration', 'level', 'provider']) &&
+             data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
+             data.duration is string && data.duration.size() > 0 && data.duration.size() < 50 &&
+             data.level in ['Beginner', 'Intermediate', 'Advanced'] &&
+             data.provider is string && data.provider.size() > 0 && data.provider.size() < 100 &&
+             (!('createdAt' in data) || data.createdAt is timestamp);
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated() && isValidUser(request.resource.data) && 
+                    ((isOwner(userId) && request.resource.data.role == 'user' && request.resource.data.uid == request.auth.uid) || isAdmin());
+      allow update: if isAuthenticated() && isValidUser(request.resource.data) && 
+                    ((isOwner(userId) && request.resource.data.role == resource.data.role && request.resource.data.uid == resource.data.uid) || isAdmin());
+    }
+
+    match /initiatives/{initiativeId} {
+      allow read: if isAuthenticated();
+      allow create, update, delete: if isAdmin() && isValidInitiative(request.resource.data);
+    }
+
+    match /challenges/{challengeId} {
+      allow read: if isAuthenticated() && (resource.data.status == 'approved' || resource.data.authorUid == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && isValidChallenge(request.resource.data) && 
+                    request.resource.data.authorUid == request.auth.uid && 
+                    request.resource.data.status == 'pending';
+      allow update: if isAdmin() && isValidChallenge(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /user_initiatives/{userInitiativeId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && isValidUserInitiative(request.resource.data) && 
+                    request.resource.data.userId == request.auth.uid;
+      allow update: if isAuthenticated() && isValidUserInitiative(request.resource.data) && 
+                    request.resource.data.userId == request.auth.uid && 
+                    resource.data.userId == request.auth.uid &&
+                    request.resource.data.initiativeId == resource.data.initiativeId;
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    match /trainings/{trainingId} {
+      allow read: if isAuthenticated();
+      allow create, update, delete: if isAdmin() && isValidTraining(request.resource.data);
+    }
+  }
+}
