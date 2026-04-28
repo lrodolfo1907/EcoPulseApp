@@ -1,4 +1,4 @@
-# EcoPulse by WWF
+# EcoPulse
 
 EcoPulse is a web application designed to track, encourage, and gamify eco-friendly initiatives. Users can calculate their carbon footprint, join local and global environmental challenges, track their "Green Hours," and learn about sustainability.
 

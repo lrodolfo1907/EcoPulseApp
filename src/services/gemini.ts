@@ -18,6 +18,28 @@ export async function getEcoTip(userContext?: string) {
   }
 }
 
+export async function chatWithEcoBot(message: string, history: { role: string, text: string }[]) {
+  try {
+    const contents = history.map(msg => ({
+      role: msg.role === 'user' ? 'user' : 'model',
+      parts: [{ text: msg.text }]
+    }));
+    contents.push({ role: 'user', parts: [{ text: message }] });
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: contents,
+      config: {
+        systemInstruction: "You are EcoBot, the official assistant for the EcoPulse app. Answer questions about the app's features (Carbon Calculator, Local/Global Initiatives, Eco-Academy Training, Community Challenges, Green Hours) and general environmental/sustainability topics. Be concise, friendly, and encouraging. If asked about unrelated topics, politely steer the conversation back to sustainability or the app.",
+      },
+    });
+    return response.text;
+  } catch (error) {
+    console.error("Error in EcoBot chat:", error);
+    return "I'm having trouble connecting right now. Please try again later!";
+  }
+}
+
 export async function calculateCarbonFootprint(data: {
   transport: number; // km per week
   energy: number; // kWh per month

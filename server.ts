@@ -2,6 +2,7 @@ import express from "express";
 import { createServer as createViteServer } from "vite";
 import path from "path";
 import { fileURLToPath } from "url";
+import nodemailer from "nodemailer";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,6 +16,46 @@ async function startServer() {
   // API routes
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok", message: "EcoPulse API is running" });
+  });
+
+  // Email API
+  app.post("/api/email/confirm-join", async (req, res) => {
+    try {
+      const { email, name, challengeTitle } = req.body;
+      if (!email) {
+        return res.status(400).json({ error: "Email is required" });
+      }
+
+      // Generate a test account on the fly (Ethereal) to mock email sending
+      const testAccount = await nodemailer.createTestAccount();
+      
+      const transporter = nodemailer.createTransport({
+        host: "smtp.ethereal.email",
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+          user: testAccount.user, // generated ethereal user
+          pass: testAccount.pass, // generated ethereal password
+        },
+      });
+
+      const info = await transporter.sendMail({
+        from: '"EcoPulse Community" <noreply@ecopulse.app>',
+        to: email,
+        subject: `You joined the challenge: ${challengeTitle}`,
+        text: `Hello ${name || 'Eco Warrior'},\n\nThank you for joining the challenge "${challengeTitle}"! We are excited to see you make an impact.\n\nBest,\nThe EcoPulse Team`,
+        html: `<p>Hello <b>${name || 'Eco Warrior'}</b>,</p><p>Thank you for joining the challenge "<b>${challengeTitle}</b>"!</p><p>We are excited to see you make an impact.</p><br/><p>Best,<br/>The EcoPulse Team</p>`,
+      });
+
+      const previewUrl = nodemailer.getTestMessageUrl(info);
+      console.log("Message sent: %s", info.messageId);
+      console.log("Preview URL: %s", previewUrl);
+
+      res.json({ success: true, previewUrl });
+    } catch (error) {
+      console.error("Failed to send email", error);
+      res.status(500).json({ error: "Failed to send email confirmation" });
+    }
   });
 
   // Mock data for carbon footprint
@@ -49,7 +90,7 @@ async function startServer() {
       ]);
     } else {
       res.json([
-        { id: 3, title: "Report Translation (PT/EN)", org: "WWF International", skill: "Languages", hours: 0.5, type: "Remote", time: "15 min" },
+        { id: 3, title: "Report Translation (PT/EN)", org: "Global EcoPartners", skill: "Languages", hours: 0.5, type: "Remote", time: "15 min" },
         { id: 4, title: "Satellite Image Identification", org: "Zero Deforestation Project", skill: "Visual Analysis", hours: 0.2, type: "Remote", time: "10 min" },
       ]);
     }
@@ -58,7 +99,7 @@ async function startServer() {
   // Training API
   app.get("/api/training", (req, res) => {
     res.json([
-      { id: 1, title: "Circular Economy Basics", duration: "2h", level: "Beginner", provider: "WWF Academy" },
+      { id: 1, title: "Circular Economy Basics", duration: "2h", level: "Beginner", provider: "EcoPulse Academy" },
       { id: 2, title: "Climate Advocacy 101", duration: "5h", level: "Intermediate", provider: "Greenpeace Education" },
       { id: 3, title: "Sustainable Urban Planning", duration: "10h", level: "Advanced", provider: "UN-Habitat" },
     ]);

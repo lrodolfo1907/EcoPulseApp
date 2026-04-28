@@ -6,9 +6,9 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 
 const mockInitiatives = [
-  { title: "River Cleanup Drive", org: "WWF Local Chapter", type: "local", hours: 4, verified: true, description: "Help clean the local river." },
+  { title: "River Cleanup Drive", org: "Local Eco Chapter", type: "local", hours: 4, verified: true, description: "Help clean the local river." },
   { title: "Tree Planting Weekend", org: "Green Earth", type: "local", hours: 6, verified: true, description: "Plant trees in the community park." },
-  { title: "Digital Carbon Audit", org: "WWF Global", type: "global", hours: 2, verified: true, description: "Audit your digital carbon footprint." },
+  { title: "Digital Carbon Audit", org: "Global EcoPartners", type: "global", hours: 2, verified: true, description: "Audit your digital carbon footprint." },
   { title: "Wildlife Image Tagging", org: "Conservation Int.", type: "global", hours: 1, verified: true, description: "Tag wildlife images for research." }
 ];
 

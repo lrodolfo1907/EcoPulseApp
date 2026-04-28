@@ -109,6 +109,14 @@ service cloud.firestore {
              (!('createdAt' in data) || data.createdAt is timestamp);
     }
 
+    function isValidUserChallenge(data) {
+      return hasRequiredFields(['userId', 'challengeId', 'status']) &&
+             data.userId is string && data.userId.size() > 0 && data.userId.size() < 100 &&
+             data.challengeId is string && data.challengeId.size() > 0 && data.challengeId.size() < 100 &&
+             data.status in ['joined', 'completed'] &&
+             (!('joinedAt' in data) || data.joinedAt is timestamp);
+    }
+
     function isValidUserInitiative(data) {
       return hasRequiredFields(['userId', 'initiativeId', 'status']) &&
              data.userId is string && data.userId.size() > 0 && data.userId.size() < 100 &&
@@ -150,6 +158,17 @@ service cloud.firestore {
                     request.resource.data.status == 'pending';
       allow update: if isAdmin() && isValidChallenge(request.resource.data);
       allow delete: if isAdmin();
+    }
+
+    match /user_challenges/{userChallengeId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && isValidUserChallenge(request.resource.data) && 
+                    request.resource.data.userId == request.auth.uid;
+      allow update: if isAuthenticated() && isValidUserChallenge(request.resource.data) && 
+                    request.resource.data.userId == request.auth.uid && 
+                    resource.data.userId == request.auth.uid &&
+                    request.resource.data.challengeId == resource.data.challengeId;
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
     }
 
     match /user_initiatives/{userInitiativeId} {

@@ -24,7 +24,7 @@
         "org": { "type": "string", "description": "Organization running the initiative." },
         "type": { "type": "string", "enum": ["local", "global"], "description": "Type of initiative." },
         "hours": { "type": "number", "description": "Green hours rewarded." },
-        "verified": { "type": "boolean", "description": "Whether the initiative is verified by WWF." },
+        "verified": { "type": "boolean", "description": "Whether the initiative is verified by partners." },
         "description": { "type": "string", "description": "Detailed description." },
         "createdAt": { "type": "string", "format": "date-time" }
       },
@@ -42,6 +42,18 @@
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["title", "description", "status", "authorUid"]
+    },
+    "UserChallenge": {
+      "title": "UserChallenge",
+      "description": "Tracks which challenges a user has joined.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "The user's unique ID." },
+        "challengeId": { "type": "string", "description": "The challenge ID." },
+        "status": { "type": "string", "enum": ["joined", "completed"], "description": "Status of the challenge." },
+        "joinedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "challengeId", "status"]
     },
     "UserInitiative": {
       "title": "UserInitiative",
@@ -85,6 +97,10 @@
     "/user_initiatives/{userInitiativeId}": {
       "schema": { "$ref": "#/entities/UserInitiative" },
       "description": "Stores user participation records."
+    },
+    "/user_challenges/{userChallengeId}": {
+      "schema": { "$ref": "#/entities/UserChallenge" },
+      "description": "Information about a user's participation in challenges."
     },
     "/trainings/{trainingId}": {
       "schema": { "$ref": "#/entities/Training" },
