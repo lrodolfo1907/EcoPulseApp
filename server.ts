@@ -4,9 +4,24 @@ import path from "path";
 import { fileURLToPath } from "url";
 import nodemailer from "nodemailer";
 import fs from "fs";
+import { GoogleGenAI } from "@google/genai";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Initialize Gemini
+let genAI: GoogleGenAI | null = null;
+function getGenAI() {
+  if (!genAI) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      console.error("GEMINI_API_KEY is not set.");
+      return null;
+    }
+    genAI = new GoogleGenAI(apiKey);
+  }
+  return genAI;
+}
 
 async function startServer() {
   const app = express();
@@ -17,6 +32,81 @@ async function startServer() {
   // API routes
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok", message: "EcoPulse API is running" });
+  });
+
+  // AI Routes
+  app.post("/api/ai/tip", async (req, res) => {
+    try {
+      const { userContext } = req.body;
+      const ai = getGenAI();
+      if (!ai) return res.status(503).json({ error: "AI service unavailable" });
+
+      const model = ai.getGenerativeModel({
+        model: "gemini-1.5-flash",
+        systemInstruction: "You are an expert sustainability consultant. Your tips are concise, evidence-based, and encouraging. Avoid generic advice like 'recycle more' unless it's a specific, lesser-known recycling tip.",
+      });
+
+      const result = await model.generateContent(`Provide a short, actionable, and surprising sustainability tip. ${userContext ? `Context: ${userContext}` : ""}`);
+      const response = await result.response;
+      res.json({ text: response.text() });
+    } catch (error) {
+      console.error("AI Tip Error:", error);
+      res.status(500).json({ error: "Failed to generate tip" });
+    }
+  });
+
+  app.post("/api/ai/chat", async (req, res) => {
+    try {
+      const { message, history } = req.body;
+      const ai = getGenAI();
+      if (!ai) return res.status(503).json({ error: "AI service unavailable" });
+
+      const model = ai.getGenerativeModel({
+        model: "gemini-1.5-flash",
+        systemInstruction: "You are EcoBot, the official assistant for the EcoPulse app. Answer questions about the app's features (Carbon Calculator, Local/Global Initiatives, Eco-Academy Training, Community Challenges, Green Hours) and general environmental/sustainability topics. Be concise, friendly, and encouraging. If asked about unrelated topics, politely steer the conversation back to sustainability or the app.",
+      });
+
+      const contents = history.map((msg: any) => ({
+        role: msg.role === 'user' ? 'user' : 'model',
+        parts: [{ text: msg.text }]
+      }));
+      contents.push({ role: 'user', parts: [{ text: message }] });
+
+      const result = await model.generateContent({ contents });
+      const response = await result.response;
+      res.json({ text: response.text() });
+    } catch (error) {
+      console.error("AI Chat Error:", error);
+      res.status(500).json({ error: "Failed to process chat" });
+    }
+  });
+
+  app.post("/api/ai/calculate", async (req, res) => {
+    try {
+      const { transport, energy, diet } = req.body;
+      const ai = getGenAI();
+      if (!ai) return res.status(503).json({ error: "AI service unavailable" });
+
+      const model = ai.getGenerativeModel({
+        model: "gemini-1.5-flash",
+        generationConfig: {
+          responseMimeType: "application/json",
+        },
+      });
+
+      const prompt = `Calculate the estimated weekly carbon footprint (kg CO2e) for: 
+        - Transport: ${transport} km/week
+        - Energy: ${energy} kWh/month
+        - Diet: ${diet}
+        Return ONLY a JSON object with 'total', 'breakdown' (object with transport, energy, diet), and 'suggestion'.`;
+
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      res.json(JSON.parse(response.text()));
+    } catch (error) {
+      console.error("AI Calculate Error:", error);
+      res.status(500).json({ error: "Failed to calculate footprint" });
+    }
   });
 
   // Email API
