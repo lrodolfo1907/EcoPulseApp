@@ -7,8 +7,8 @@ interface CommunityTabProps {
   joinedChallengeIds: string[];
   isSuggesting: boolean;
   setIsSuggesting: (val: boolean) => void;
-  suggestion: { title: string; description: string };
-  setSuggestion: (val: { title: string; description: string }) => void;
+  suggestion: { title: string; description: string; category: string };
+  setSuggestion: (val: { title: string; description: string; category: string }) => void;
   handleSuggestChallenge: () => void;
   handleJoinChallenge: (challengeId: string) => void;
 }
@@ -54,6 +54,11 @@ export function CommunityTab({
               <div className="w-12 h-12 bg-green-50 text-green-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <Award size={24} />
               </div>
+              {challenge.category && (
+                <span className="inline-block px-3 py-1 bg-green-50 text-green-700 text-xs font-bold rounded-full mb-3 border border-green-100">
+                  {challenge.category}
+                </span>
+              )}
               <h4 className="text-lg font-black mb-2 leading-tight">{challenge.title}</h4>
               <p className="text-sm text-gray-500 font-medium mb-4 line-clamp-2">{challenge.description}</p>
               <button 
@@ -68,15 +73,18 @@ export function CommunityTab({
         ) : (
           // Fallback mock data if no approved challenges exist yet
           [
-            { title: "No Plastic Week", participants: 1240, daysLeft: 3, icon: Award, progress: 65 },
-            { title: "Cycle to Work", participants: 850, daysLeft: 5, icon: Award, progress: 40 },
-            { title: "Zero Waste Cooking", participants: 2100, daysLeft: 2, icon: Award, progress: 85 },
-            { title: "Tree Planting", participants: 450, daysLeft: 12, icon: Award, progress: 20 },
+            { title: "No Plastic Week", participants: 1240, daysLeft: 3, icon: Award, progress: 65, category: "Waste Reduction" },
+            { title: "Cycle to Work", participants: 850, daysLeft: 5, icon: Award, progress: 40, category: "Climate Action" },
+            { title: "Zero Waste Cooking", participants: 2100, daysLeft: 2, icon: Award, progress: 85, category: "Waste Reduction" },
+            { title: "Tree Planting", participants: 450, daysLeft: 12, icon: Award, progress: 20, category: "Conservation" },
           ].map((challenge) => (
             <div key={challenge.title} className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all cursor-pointer group">
               <div className="w-12 h-12 bg-green-50 text-green-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <challenge.icon size={24} />
               </div>
+              <span className="inline-block px-3 py-1 bg-green-50 text-green-700 text-xs font-bold rounded-full mb-3 border border-green-100">
+                {challenge.category}
+              </span>
               <h4 className="text-lg font-black mb-2 leading-tight">{challenge.title}</h4>
               <div className="flex items-center justify-between text-xs font-bold text-gray-400 mb-4">
                 <span>{challenge.participants} joined</span>
@@ -136,6 +144,19 @@ export function CommunityTab({
                     placeholder="How can people participate?"
                     className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-green-500 transition-all resize-none"
                   />
+                </div>
+                <div>
+                  <label className="block text-xs font-black uppercase tracking-widest text-gray-400 mb-2">Category</label>
+                  <select
+                    value={suggestion.category}
+                    onChange={(e) => setSuggestion({...suggestion, category: e.target.value})}
+                    className="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl outline-none focus:ring-2 focus:ring-green-500 transition-all text-gray-600 font-medium"
+                  >
+                    <option value="Waste Reduction">Waste Reduction</option>
+                    <option value="Climate Action">Climate Action</option>
+                    <option value="Conservation">Conservation</option>
+                    <option value="Lifestyle">Lifestyle</option>
+                  </select>
                 </div>
                 <div className="flex gap-4">
                   <button 

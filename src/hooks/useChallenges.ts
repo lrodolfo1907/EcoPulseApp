@@ -8,14 +8,14 @@ export function useChallenges(user: any, isAdmin: boolean) {
   const [joinedChallengeIds, setJoinedChallengeIds] = useState<string[]>([]);
   const [isChallengesLoading, setIsChallengesLoading] = useState(false);
   const [isSuggesting, setIsSuggesting] = useState(false);
-  const [suggestion, setSuggestion] = useState({ title: "", description: "" });
+  const [suggestion, setSuggestion] = useState({ title: "", description: "", category: "Climate Action" });
 
   const fetchChallenges = async () => {
     const mockChallengesFallback = [
-      { id: "mock1", title: "No Plastic Week", description: "Avoid single-use plastics for an entire week.", participants: 1240, daysLeft: 3, progress: 65, status: "approved" },
-      { id: "mock2", title: "Cycle to Work", description: "Commute by bike instead of car.", participants: 850, daysLeft: 5, progress: 40, status: "approved" },
-      { id: "mock3", title: "Zero Waste Cooking", description: "Cook meals with zero food waste.", participants: 2100, daysLeft: 2, progress: 85, status: "approved" },
-      { id: "mock4", title: "Tree Planting", description: "Join local tree planting events.", participants: 450, daysLeft: 12, progress: 20, status: "approved" },
+      { id: "mock1", title: "No Plastic Week", description: "Avoid single-use plastics for an entire week.", category: "Waste Reduction", participants: 1240, daysLeft: 3, progress: 65, status: "approved" },
+      { id: "mock2", title: "Cycle to Work", description: "Commute by bike instead of car.", category: "Climate Action", participants: 850, daysLeft: 5, progress: 40, status: "approved" },
+      { id: "mock3", title: "Zero Waste Cooking", description: "Cook meals with zero food waste.", category: "Waste Reduction", participants: 2100, daysLeft: 2, progress: 85, status: "approved" },
+      { id: "mock4", title: "Tree Planting", description: "Join local tree planting events.", category: "Conservation", participants: 450, daysLeft: 12, progress: 20, status: "approved" },
     ];
 
     if (!user) {
@@ -76,13 +76,14 @@ export function useChallenges(user: any, isAdmin: boolean) {
       await addDoc(collection(db, "challenges"), {
         title: suggestion.title,
         description: suggestion.description,
+        category: suggestion.category,
         status: "pending",
         authorUid: user.uid,
         createdAt: serverTimestamp()
       });
       alert("Suggestion submitted! Our admins will review it soon.");
       setIsSuggesting(false);
-      setSuggestion({ title: "", description: "" });
+      setSuggestion({ title: "", description: "", category: "Climate Action" });
     } catch (error) {
       console.error("Error submitting challenge:", error);
       alert("Failed to submit challenge. Please try again.");

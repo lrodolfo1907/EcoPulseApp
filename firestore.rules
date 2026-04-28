@@ -106,6 +106,7 @@ service cloud.firestore {
              data.description is string && data.description.size() > 0 && data.description.size() < 2000 &&
              data.status in ['pending', 'approved', 'rejected'] &&
              data.authorUid is string && data.authorUid.size() > 0 && data.authorUid.size() < 100 &&
+             (!('category' in data) || (data.category is string && data.category.size() < 100)) &&
              (!('createdAt' in data) || data.createdAt is timestamp);
     }
 

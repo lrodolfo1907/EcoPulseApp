@@ -35,6 +35,11 @@ export function AdminTab({ pendingChallenges, handleUpdateChallengeStatus }: Adm
               <div key={challenge.id} className="p-6 flex flex-col md:flex-row gap-6 justify-between items-start md:items-center hover:bg-gray-50 transition-colors">
                 <div className="flex-1">
                   <h4 className="text-xl font-black mb-1">{challenge.title}</h4>
+                  {challenge.category && (
+                    <span className="inline-block px-2 py-0.5 bg-gray-200 text-gray-700 text-[10px] font-bold uppercase rounded mb-2">
+                      {challenge.category}
+                    </span>
+                  )}
                   <p className="text-gray-600 text-sm mb-2">{challenge.description}</p>
                   <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">
                     Suggested by: {challenge.authorUid}
