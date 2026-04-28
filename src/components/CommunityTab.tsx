@@ -59,7 +59,7 @@ export function CommunityTab({
                   {challenge.category}
                 </span>
               )}
-              <h4 className="text-lg font-black mb-2 leading-tight">{challenge.title}</h4>
+              <h4 className="text-lg font-bold mb-2 leading-tight">{challenge.title}</h4>
               <p className="text-sm text-gray-500 font-medium mb-4 line-clamp-2">{challenge.description}</p>
               <button 
                 onClick={() => handleJoinChallenge(challenge.id)}
@@ -85,7 +85,7 @@ export function CommunityTab({
               <span className="inline-block px-3 py-1 bg-green-50 text-green-700 text-xs font-bold rounded-full mb-3 border border-green-100">
                 {challenge.category}
               </span>
-              <h4 className="text-lg font-black mb-2 leading-tight">{challenge.title}</h4>
+              <h4 className="text-lg font-bold mb-2 leading-tight">{challenge.title}</h4>
               <div className="flex items-center justify-between text-xs font-bold text-gray-400 mb-4">
                 <span>{challenge.participants} joined</span>
                 <span className="text-green-600">{challenge.daysLeft}d left</span>
@@ -122,11 +122,11 @@ export function CommunityTab({
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               className="bg-white w-full max-w-lg rounded-[2.5rem] p-8 relative z-10 shadow-2xl"
             >
-              <h3 className="text-2xl font-black mb-2">Suggest a Challenge</h3>
+              <h3 className="text-2xl font-bold mb-2">Suggest a Challenge</h3>
               <p className="text-gray-500 font-medium mb-8">Your idea will be validated by admins before going live.</p>
               <div className="space-y-6">
                 <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-gray-400 mb-2">Challenge Title</label>
+                  <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Challenge Title</label>
                   <input 
                     type="text" 
                     value={suggestion.title}
@@ -136,7 +136,7 @@ export function CommunityTab({
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-gray-400 mb-2">Description</label>
+                  <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Description</label>
                   <textarea 
                     rows={4}
                     value={suggestion.description}
@@ -146,7 +146,7 @@ export function CommunityTab({
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-gray-400 mb-2">Category</label>
+                  <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Category</label>
                   <select
                     value={suggestion.category}
                     onChange={(e) => setSuggestion({...suggestion, category: e.target.value})}

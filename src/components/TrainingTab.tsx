@@ -30,14 +30,14 @@ export function TrainingTab({ trainings }: TrainingTabProps) {
             <div className="flex-1 flex flex-col justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-[10px] font-black uppercase tracking-widest bg-gray-100 text-gray-500 px-2 py-0.5 rounded-md">
+                  <span className="text-[10px] font-bold uppercase tracking-widest bg-gray-100 text-gray-500 px-2 py-0.5 rounded-md">
                     {course.level}
                   </span>
-                  <span className="text-[10px] font-black uppercase tracking-widest bg-green-100 text-green-700 px-2 py-0.5 rounded-md">
+                  <span className="text-[10px] font-bold uppercase tracking-widest bg-green-100 text-green-700 px-2 py-0.5 rounded-md">
                     {course.duration}
                   </span>
                 </div>
-                <h4 className="text-xl font-black mb-1">{course.title}</h4>
+                <h4 className="text-xl font-bold mb-1">{course.title}</h4>
                 <p className="text-sm text-gray-400 font-bold uppercase tracking-wider">{course.provider}</p>
               </div>
               <button 
@@ -46,7 +46,7 @@ export function TrainingTab({ trainings }: TrainingTabProps) {
                     window.open(course.url, "_blank");
                   }
                 }}
-                className="mt-6 flex items-center gap-2 text-green-700 font-black hover:gap-4 transition-all"
+                className="mt-6 flex items-center gap-2 text-green-700 font-bold hover:gap-4 transition-all"
               >
                 Start Learning <ChevronRight size={18} />
               </button>

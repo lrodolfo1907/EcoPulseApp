@@ -39,7 +39,7 @@ export function CalculatorTab({
 
         <div className="space-y-8">
           <div className="group">
-            <label className="block text-xs font-black uppercase tracking-widest text-gray-400 mb-3 group-focus-within:text-green-600 transition-colors">Transport (km/week)</label>
+            <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-3 group-focus-within:text-green-600 transition-colors">Transport (km/week)</label>
             <input 
               type="number" 
               value={calcData.transport}
@@ -48,7 +48,7 @@ export function CalculatorTab({
             />
           </div>
           <div className="group">
-            <label className="block text-xs font-black uppercase tracking-widest text-gray-400 mb-3 group-focus-within:text-green-600 transition-colors">Energy Usage (kWh/month)</label>
+            <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-3 group-focus-within:text-green-600 transition-colors">Energy Usage (kWh/month)</label>
             <input 
               type="number" 
               value={calcData.energy}
@@ -57,7 +57,7 @@ export function CalculatorTab({
             />
           </div>
           <div className="group">
-            <label className="block text-xs font-black uppercase tracking-widest text-gray-400 mb-3 group-focus-within:text-green-600 transition-colors">Diet Type</label>
+            <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-3 group-focus-within:text-green-600 transition-colors">Diet Type</label>
             <select 
               value={calcData.diet}
               onChange={(e) => setCalcData({...calcData, diet: e.target.value})}
@@ -72,7 +72,7 @@ export function CalculatorTab({
           <button 
             onClick={handleCalculate}
             disabled={isCalcLoading}
-            className="w-full py-5 bg-green-700 hover:bg-green-600 text-white rounded-[1.5rem] font-black text-xl shadow-2xl shadow-green-200 transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
+            className="w-full py-5 bg-green-700 hover:bg-green-600 text-white rounded-[1.5rem] font-bold text-xl shadow-2xl shadow-green-200 transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
           >
             {isCalcLoading ? <RefreshCw className="animate-spin" /> : <CalcIcon />}
             {isCalcLoading ? "Analyzing..." : "Calculate My Impact"}
@@ -86,16 +86,16 @@ export function CalculatorTab({
             className="mt-12 p-8 bg-green-50 rounded-[2.5rem] border border-green-100 relative overflow-hidden"
           >
             <div className="relative z-10">
-              <h3 className="text-sm font-black text-green-800 uppercase tracking-[0.2em] mb-6 text-center">Weekly Footprint</h3>
+              <h3 className="text-sm font-bold text-green-800 uppercase tracking-[0.2em] mb-6 text-center">Weekly Footprint</h3>
               <div className="text-center mb-8">
                 <span className="text-7xl font-black text-green-700">{calcResult.total}</span>
-                <span className="text-green-700 font-black ml-3 text-xl">kg CO2e</span>
+                <span className="text-green-700 font-bold ml-3 text-xl">kg CO2e</span>
               </div>
               <div className="grid grid-cols-3 gap-6 mb-8">
                 {Object.entries(calcResult.breakdown).map(([key, val]: any) => (
                   <div key={key} className="bg-white/60 backdrop-blur-sm p-4 rounded-2xl text-center border border-white">
-                    <p className="text-[10px] uppercase font-black tracking-widest text-green-800 mb-1">{key}</p>
-                    <p className="text-lg font-black">{val}kg</p>
+                    <p className="text-[10px] uppercase font-bold tracking-widest text-green-800 mb-1">{key}</p>
+                    <p className="text-lg font-bold">{val}kg</p>
                   </div>
                 ))}
               </div>

@@ -60,10 +60,10 @@ export function EditProfileModal({ isOpen, onClose, user, initialBio, onSaveSucc
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             className="bg-white w-full max-w-md rounded-[2.5rem] p-8 relative z-10 shadow-2xl"
           >
-            <h3 className="text-2xl font-black mb-6">Edit Profile</h3>
+            <h3 className="text-2xl font-bold mb-6">Edit Profile</h3>
             <div className="space-y-6">
               <div>
-                <label className="block text-xs font-black uppercase tracking-widest text-gray-400 mb-2">Display Name</label>
+                <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Display Name</label>
                 <input 
                   type="text" 
                   value={profileData.displayName}
@@ -73,7 +73,7 @@ export function EditProfileModal({ isOpen, onClose, user, initialBio, onSaveSucc
                 />
               </div>
               <div>
-                <label className="block text-xs font-black uppercase tracking-widest text-gray-400 mb-2">Bio</label>
+                <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Bio</label>
                 <textarea 
                   rows={3}
                   value={profileData.bio}

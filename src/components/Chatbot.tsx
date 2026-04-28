@@ -7,7 +7,7 @@ import { chatWithEcoBot } from '../services/gemini';
 export function Chatbot() {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState<{role: string, text: string}[]>([
-    { role: 'model', text: "Hi! I'm EcoBot. Ask me about EcoPulse features or how to live more sustainably!" }
+    { role: 'model', text: "Hi! I'm EcoBot. New here? Ask me for an Onboarding guide, or check out the Guide tab!" }
   ]);
   const [chatInput, setChatInput] = useState("");
   const [isChatLoading, setIsChatLoading] = useState(false);
@@ -49,7 +49,7 @@ export function Chatbot() {
                   <Leaf size={20} />
                 </div>
                 <div>
-                  <h4 className="font-black">EcoBot</h4>
+                  <h4 className="font-bold">EcoBot</h4>
                   <p className="text-xs text-green-100 font-medium">Powered by Gemini</p>
                 </div>
               </div>

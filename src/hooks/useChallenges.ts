@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { collection, getDocs, query, where, addDoc, updateDoc, doc, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase";
+import confetti from "canvas-confetti";
 
 export function useChallenges(user: any, isAdmin: boolean) {
   const [challenges, setChallenges] = useState<any[]>([]);
@@ -133,15 +134,32 @@ export function useChallenges(user: any, isAdmin: boolean) {
           })
         });
         const data = await response.json();
+
+        // Trigger confetti!
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#16a34a', '#22c55e', '#bef264', '#fcd34d'],
+          zIndex: 9999
+        });
+
         if (data.previewUrl) {
           console.log("✉️ Email sent! View the email preview here:", data.previewUrl);
-          alert(`Success! We've sent a confirmation email to ${user.email}.`);
+          setTimeout(() => alert(`Success! We've sent a confirmation email to ${user.email}.`), 500);
         } else {
-          alert(`Successfully joined the challenge!`);
+          setTimeout(() => alert(`Successfully joined the challenge!`), 500);
         }
       } catch (err) {
-        // Email failed but join succeeded
-        alert(`Successfully joined the challenge! (Email confirmation pending)`);
+        // Trigger confetti even if email fails!
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#16a34a', '#22c55e', '#bef264', '#fcd34d'],
+          zIndex: 9999
+        });
+        setTimeout(() => alert(`Successfully joined the challenge!`), 500);
       }
     } catch (error) {
       console.error("Error joining challenge:", error);

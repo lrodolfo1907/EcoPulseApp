@@ -10,7 +10,7 @@ export function Footer() {
             <div className="w-10 h-10 bg-green-700 rounded-xl flex items-center justify-center text-white">
               <Leaf size={24} />
             </div>
-            <span className="text-2xl font-black tracking-tighter"><span className="text-green-600">Eco</span>Pulse</span>
+            <span className="text-2xl font-bold tracking-tighter"><span className="text-green-600">Eco</span>Pulse</span>
           </div>
           <div className="flex gap-8 text-sm font-bold text-gray-400">
             <a href="#" className="hover:text-green-700 transition-colors">Privacy</a>

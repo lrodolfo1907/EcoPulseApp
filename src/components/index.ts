@@ -11,3 +11,7 @@ export * from './HomeTab';
 export * from './InitiativesTab';
 export * from './PortfolioTab';
 export * from './TrainingTab';
+export * from './SurveyModal';
+export * from './LeaderboardTab';
+export * from './RewardsTab';
+export * from './OnboardingTab';

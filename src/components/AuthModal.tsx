@@ -80,7 +80,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             className="bg-white w-full max-w-md rounded-[2.5rem] p-8 relative z-10 shadow-2xl"
           >
-            <h3 className="text-2xl font-black mb-2">
+            <h3 className="text-2xl font-bold mb-2">
               {authMode === 'signin' ? 'Welcome Back' : 'Create an Account'}
             </h3>
             <p className="text-gray-500 font-medium mb-8">
@@ -95,7 +95,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
             <form onSubmit={handleEmailAuth} className="space-y-6">
               <div>
-                <label className="block text-xs font-black uppercase tracking-widest text-gray-400 mb-2">Email</label>
+                <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Email</label>
                 <input 
                   type="email" 
                   value={email}
@@ -106,7 +106,7 @@ export function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 />
               </div>
               <div>
-                <label className="block text-xs font-black uppercase tracking-widest text-gray-400 mb-2">Password</label>
+                <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Password</label>
                 <input 
                   type="password" 
                   value={password}

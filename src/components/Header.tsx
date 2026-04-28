@@ -15,8 +15,13 @@ interface HeaderProps {
 
 export function Header({ activeTab, onTabChange, onLogout, onSignInClick, isMenuOpen, setIsMenuOpen }: HeaderProps) {
   const { user, isAdmin, greenHours } = useAuth();
-  const navItems = ["Home", "Initiatives", "Calculator", "Training", "Community", "Portfolio"];
-  if (isAdmin) navItems.push("Admin");
+  const navItems = [
+    { id: "home", label: "Home" },
+    { id: "action", label: "Action Center" },
+    { id: "community", label: "Community" },
+    { id: "portfolio", label: "Portfolio" },
+    { id: "profile", label: "Profile" }
+  ];
 
   const handleTabClick = (item: string) => {
     onTabChange(item.toLowerCase());
@@ -33,7 +38,7 @@ export function Header({ activeTab, onTabChange, onLogout, onSignInClick, isMenu
                 <Leaf size={24} />
               </div>
               <div>
-                <h1 className="text-xl font-black tracking-tighter flex items-center gap-2">
+                <h1 className="text-xl font-bold tracking-tighter flex items-center gap-2">
                   <span><span className="text-green-600">Eco</span>Pulse</span>
                 </h1>
               </div>
@@ -43,16 +48,16 @@ export function Header({ activeTab, onTabChange, onLogout, onSignInClick, isMenu
             <div className="hidden lg:flex items-center gap-6">
               {navItems.map((item) => (
                 <button
-                  key={item}
-                  onClick={() => handleTabClick(item)}
+                  key={item.id}
+                  onClick={() => handleTabClick(item.id)}
                   className={cn(
                     "text-sm font-bold transition-all px-3 py-2 rounded-lg",
-                    activeTab === item.toLowerCase() 
+                    activeTab === item.id
                       ? "bg-green-50 text-green-700 shadow-sm" 
                       : "text-gray-500 hover:text-green-600 hover:bg-gray-50"
                   )}
                 >
-                  {item}
+                  {item.label}
                 </button>
               ))}
               <div className="h-8 w-px bg-gray-200 mx-2" />
@@ -60,7 +65,7 @@ export function Header({ activeTab, onTabChange, onLogout, onSignInClick, isMenu
                 <div className="flex items-center gap-3 bg-gray-50 px-4 py-2 rounded-2xl border border-gray-100 cursor-pointer hover:bg-gray-100 transition-colors" onClick={onLogout} title="Click to log out">
                   <div className="text-right">
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider leading-none">Green Hours</p>
-                    <p className="text-sm font-black text-green-700 leading-none mt-1">{greenHours}</p>
+                    <p className="text-sm font-bold text-green-700 leading-none mt-1">{greenHours}</p>
                   </div>
                   {user.photoURL ? (
                     <img src={user.photoURL} alt="Profile" className="w-8 h-8 rounded-full" referrerPolicy="no-referrer" />
@@ -102,14 +107,14 @@ export function Header({ activeTab, onTabChange, onLogout, onSignInClick, isMenu
             <div className="flex flex-col gap-2">
               {navItems.map((item) => (
                 <button
-                  key={item}
-                  onClick={() => handleTabClick(item)}
+                  key={item.id}
+                  onClick={() => handleTabClick(item.id)}
                   className={cn(
                     "text-left text-lg font-bold p-4 rounded-2xl transition-colors",
-                    activeTab === item.toLowerCase() ? "bg-green-50 text-green-700" : "text-gray-600"
+                    activeTab === item.id ? "bg-green-50 text-green-700" : "text-gray-600"
                   )}
                 >
-                  {item}
+                  {item.label}
                 </button>
               ))}
               {!user && (
