@@ -26,11 +26,10 @@ function getGenAI() {
 async function startServer() {
   const app = express();
   const envPort = process.env.PORT ? Number(process.env.PORT) : null;
-  const PORT = envPort || 3000;
   const isProduction = process.env.NODE_ENV === "production";
 
   console.log(`[EcoPulse] Mode: ${isProduction ? "PRODUCTION" : "DEVELOPMENT"}`);
-  console.log(`[EcoPulse] Base Port: ${PORT}`);
+  console.log(`[EcoPulse] Env PORT: ${envPort}`);
 
   app.use(express.json());
 
@@ -232,56 +231,36 @@ async function startServer() {
     
     if (fs.existsSync(distPath)) {
       console.log(`[EcoPulse] Serving static files from: ${distPath}`);
-      
-      // Log files in dist/assets for debugging
-      const assetsPath = path.join(distPath, "assets");
-      if (fs.existsSync(assetsPath)) {
-        const files = fs.readdirSync(assetsPath);
-        console.log(`[EcoPulse] Assets found: ${files.join(", ")}`);
-      }
-
-      app.use(express.static(distPath, {
-        index: false
-      }));
-    } else {
-      console.error("[EcoPulse] CRITICAL: 'dist' folder NOT FOUND!");
+      app.use(express.static(distPath, { index: false }));
     }
 
-    // Catch-all route for SPA
     app.get("*", (req, res) => {
-      // Don't serve index.html for missing assets
       if (req.path.startsWith("/assets/") || req.path.includes(".")) {
-        console.warn(`[EcoPulse] Asset not found: ${req.path}`);
         return res.status(404).send("Not found");
       }
-
       const indexPath = path.join(distPath, "index.html");
       if (fs.existsSync(indexPath)) {
-        // Aggressive Cache-Busting for SPA entry point
-        res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0");
-        res.setHeader("Pragma", "no-cache");
-        res.setHeader("Expires", "0");
-        res.setHeader("Surrogate-Control", "no-store");
+        res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
         res.sendFile(indexPath);
       } else {
-        res.status(404).send("Application not found. Please ensure 'npm run build' was executed successfully.");
+        res.status(404).send("Application not found.");
       }
     });
   }
 
-  // Listen on the primary port
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`[EcoPulse] Server running on http://localhost:${PORT}`);
+  // Primary AIS Listener (Static 3000)
+  app.listen(3000, "0.0.0.0", () => {
+    console.log(`[EcoPulse] Main listener started on http://localhost:3000`);
   });
 
-  // AIS Proxy Fallback: If primary port is not 3000, also listen on 3000
-  if (PORT !== 3000) {
+  // Secondary Cloud Run Listener (Dynamic PORT)
+  if (envPort && envPort !== 3000) {
     try {
-      app.listen(3000, "0.0.0.0", () => {
-        console.log(`[EcoPulse] Also listening on http://localhost:3000 (AIS Proxy Fallback)`);
+      app.listen(envPort, "0.0.0.0", () => {
+        console.log(`[EcoPulse] Cloud Run listener started on http://localhost:${envPort}`);
       });
     } catch (err) {
-      console.warn(`[EcoPulse] Could not start fallback listener on port 3000:`, err);
+      console.warn(`[EcoPulse] Secondary listener on port ${envPort} failed:`, err);
     }
   }
 }
