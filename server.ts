@@ -25,8 +25,8 @@ function getGenAI() {
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
-  const isProduction = process.env.NODE_ENV === "production" || process.env.NODE_ENV === "prod";
+  const PORT = Number(process.env.PORT) || 3000;
+  const isProduction = process.env.NODE_ENV === "production";
 
   console.log(`[EcoPulse] Mode: ${isProduction ? "PRODUCTION" : "DEVELOPMENT"}`);
   console.log(`[EcoPulse] Port: ${PORT}`);
