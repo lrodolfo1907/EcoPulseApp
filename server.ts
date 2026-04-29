@@ -26,12 +26,16 @@ function getGenAI() {
 async function startServer() {
   const app = express();
   const PORT = process.env.PORT || 3000;
+  const isProduction = process.env.NODE_ENV === "production" || process.env.NODE_ENV === "prod";
+
+  console.log(`[EcoPulse] Mode: ${isProduction ? "PRODUCTION" : "DEVELOPMENT"}`);
+  console.log(`[EcoPulse] Port: ${PORT}`);
 
   app.use(express.json());
 
   // API routes
   app.get("/api/health", (req, res) => {
-    res.json({ status: "ok", message: "EcoPulse API is running" });
+    res.json({ status: "ok", message: "EcoPulse API is running", mode: isProduction ? "production" : "development" });
   });
 
   // AI Routes
@@ -197,31 +201,37 @@ async function startServer() {
   });
 
   // Vite middleware for development
-  if (process.env.NODE_ENV !== "production") {
-    console.log("Starting server in DEVELOPMENT mode...");
+  if (!isProduction) {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
     });
     app.use(vite.middlewares);
   } else {
-    console.log("Starting server in PRODUCTION mode...");
     const distPath = path.join(process.cwd(), "dist");
     
-    if (!fs.existsSync(distPath)) {
-      console.error("ERROR: 'dist' folder not found. Ensure the build step (npm run build) completed successfully.");
+    if (fs.existsSync(distPath)) {
+      console.log(`[EcoPulse] Serving static files from: ${distPath}`);
+      app.use(express.static(distPath, {
+        index: false // We handle index.html manually in the catch-all
+      }));
     } else {
-      console.log(`Serving static files from: ${distPath}`);
+      console.error("[EcoPulse] CRITICAL: 'dist' folder NOT FOUND!");
     }
 
-    app.use(express.static(distPath));
-    
+    // Catch-all route for SPA
     app.get("*", (req, res) => {
+      // Don't serve index.html for missing assets
+      if (req.path.startsWith("/assets/") || req.path.includes(".")) {
+        console.warn(`[EcoPulse] Asset not found: ${req.path}`);
+        return res.status(404).send("Not found");
+      }
+
       const indexPath = path.join(distPath, "index.html");
       if (fs.existsSync(indexPath)) {
         res.sendFile(indexPath);
       } else {
-        res.status(404).send("Application not found. Please ensure 'npm run build' was executed.");
+        res.status(404).send("Application not found. Please ensure 'npm run build' was executed successfully.");
       }
     });
   }
