@@ -237,9 +237,11 @@ async function startServer() {
 
       const indexPath = path.join(distPath, "index.html");
       if (fs.existsSync(indexPath)) {
-        res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+        // Aggressive Cache-Busting for SPA entry point
+        res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0");
         res.setHeader("Pragma", "no-cache");
         res.setHeader("Expires", "0");
+        res.setHeader("Surrogate-Control", "no-store");
         res.sendFile(indexPath);
       } else {
         res.status(404).send("Application not found. Please ensure 'npm run build' was executed successfully.");
