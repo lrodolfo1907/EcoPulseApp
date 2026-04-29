@@ -7,7 +7,11 @@ const resources = {
     translation: {
       "app": {
         "name": "EcoPulse",
-        "tagline": "Pulse for a sustainable future"
+        "tagline": "Pulse for a sustainable future",
+        "shareText": "I just earned {{hours}} Green Hours on EcoPulse! Join me in making a difference. #EcoPulse #Sustainability",
+        "badgeShareText": "I just unlocked the \"{{badge}}\" badge on EcoPulse! Join me and earn Green Hours for your positive impact. #EcoPulse #Sustainability",
+        "readyToShare": "Ready to share! Copy this text: ",
+        "preferencesSaved": "Preferences saved! Your recommendations will be updated."
       },
       "nav": {
         "home": "Home",
@@ -191,12 +195,6 @@ const resources = {
         "hours": "Hours",
         "me": "You"
       },
-      "app": {
-        "shareText": "I just earned {{hours}} Green Hours on EcoPulse! Join me in making a difference. #EcoPulse #Sustainability",
-        "badgeShareText": "I just unlocked the \"{{badge}}\" badge on EcoPulse! Join me and earn Green Hours for your positive impact. #EcoPulse #Sustainability",
-        "readyToShare": "Ready to share! Copy this text: ",
-        "preferencesSaved": "Preferences saved! Your recommendations will be updated."
-      },
       "chat": {
         "welcome": "Hi! I'm EcoBot. New here? Ask me for an Onboarding guide, or check out the Guide tab!",
         "placeholder": "Ask about EcoPulse or sustainability...",
@@ -208,7 +206,11 @@ const resources = {
     translation: {
       "app": {
         "name": "EcoPulse",
-        "tagline": "Pulso para um futuro sustentável"
+        "tagline": "Pulso para um futuro sustentável",
+        "shareText": "Acabei de ganhar {{hours}} Horas Verdes no EcoPulse! Junte-se a mim e faça a diferença. #EcoPulse #Sustentabilidade",
+        "badgeShareText": "Acabei de desbloquear o selo \"{{badge}}\" no EcoPulse! Venha ganhar Horas Verdes por seu impacto positivo. #EcoPulse #Sustentabilidade",
+        "readyToShare": "Pronto para compartilhar! Copie este texto: ",
+        "preferencesSaved": "Preferências salvas! Suas recomendações serão atualizadas."
       },
       "nav": {
         "home": "Início",
@@ -392,12 +394,6 @@ const resources = {
         "hours": "Horas",
         "me": "Você"
       },
-      "app": {
-        "shareText": "Acabei de ganhar {{hours}} Green Hours no EcoPulse! Junte-se a mim para fazer a diferença. #EcoPulse #Sustentabilidade",
-        "badgeShareText": "Acabei de desbloquear a medalha \"{{badge}}\" no EcoPulse! Junte-se a mim e ganhe Green Hours pelo seu impacto positivo. #EcoPulse #Sustentabilidade",
-        "readyToShare": "Pronto para compartilhar! Copie este texto: ",
-        "preferencesSaved": "Preferências salvas! Suas recomendações serão atualizadas."
-      },
       "chat": {
         "welcome": "Olá! Eu sou o EcoBot. Novo por aqui? Peça-me um guia de integração ou confira a guia Guia!",
         "placeholder": "Pergunte sobre EcoPulse ou sustentabilidade...",
@@ -409,7 +405,11 @@ const resources = {
     translation: {
       "app": {
         "name": "EcoPulse",
-        "tagline": "Pulso por un futuro sostenible"
+        "tagline": "Pulso por un futuro sostenible",
+        "shareText": "¡Acabo de ganar {{hours}} Green Hours en EcoPulse! Únete a mí para marcar la diferencia. #EcoPulse #Sostenibilidad",
+        "badgeShareText": "¡Acabo de desbloquear la medalla \"{{badge}}\" en EcoPulse! Únete a mí y gana Green Hours por tu impacto positivo. #EcoPulse #Sostenibilidad",
+        "readyToShare": "¡Listo para compartir! Copia este texto: ",
+        "preferencesSaved": "¡Preferencias guardadas! Tus recomendaciones se actualizarán."
       },
       "nav": {
         "home": "Inicio",
@@ -592,12 +592,6 @@ const resources = {
         "local": "Local",
         "hours": "Horas",
         "me": "Tú"
-      },
-      "app": {
-        "shareText": "¡Acabo de ganar {{hours}} Green Hours en EcoPulse! Únete a mí para marcar la diferencia. #EcoPulse #Sostenibilidad",
-        "badgeShareText": "¡Acabo de desbloquear la medalla \"{{badge}}\" en EcoPulse! Únete a mí y gana Green Hours por tu impacto positivo. #EcoPulse #Sostenibilidad",
-        "readyToShare": "¡Listo para compartir! Copia este texto: ",
-        "preferencesSaved": "¡Preferencias guardadas! Tus recomendaciones se actualizarán."
       },
       "chat": {
         "welcome": "¡Hola! Soy EcoBot. ¿Eres nuevo aquí? ¡Pídeme una guía de bienvenida o consulta la pestaña Guía!",
