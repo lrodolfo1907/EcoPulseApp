@@ -212,8 +212,16 @@ async function startServer() {
     
     if (fs.existsSync(distPath)) {
       console.log(`[EcoPulse] Serving static files from: ${distPath}`);
+      
+      // Log files in dist/assets for debugging
+      const assetsPath = path.join(distPath, "assets");
+      if (fs.existsSync(assetsPath)) {
+        const files = fs.readdirSync(assetsPath);
+        console.log(`[EcoPulse] Assets found: ${files.join(", ")}`);
+      }
+
       app.use(express.static(distPath, {
-        index: false // We handle index.html manually in the catch-all
+        index: false
       }));
     } else {
       console.error("[EcoPulse] CRITICAL: 'dist' folder NOT FOUND!");
@@ -229,6 +237,9 @@ async function startServer() {
 
       const indexPath = path.join(distPath, "index.html");
       if (fs.existsSync(indexPath)) {
+        res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+        res.setHeader("Pragma", "no-cache");
+        res.setHeader("Expires", "0");
         res.sendFile(indexPath);
       } else {
         res.status(404).send("Application not found. Please ensure 'npm run build' was executed successfully.");
