@@ -61,14 +61,14 @@ export default function App() {
   const { calcData, setCalcData, calcResult, isCalcLoading, handleCalculate } = useCalculator();
 
   const handleShare = (platform: string, badgeName?: string) => {
-    let text = `I just earned ${greenHours} Green Hours on EcoPulse! Join me in making a difference. #EcoPulse #Sustainability`;
+    let text = t('app.shareText', { hours: greenHours });
     if (badgeName) {
-      text = `I just unlocked the "${badgeName}" badge on EcoPulse! Join me and earn Green Hours for your positive impact. #EcoPulse #Sustainability`;
+      text = t('app.badgeShareText', { badge: badgeName });
     }
     if (platform === "linkedin") {
       window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}&summary=${encodeURIComponent(text)}`, "_blank");
     } else {
-      alert("Ready to share! Copy this text: " + text);
+      alert(t('app.readyToShare') + text);
     }
   };
 
@@ -295,7 +295,7 @@ export default function App() {
         onClose={() => setShowSurvey(false)} 
         onComplete={(prefs) => {
           setUserPreferences(prefs);
-          alert('Preferences saved! Your recommendations will be updated.');
+          alert(t('app.preferencesSaved'));
         }} 
       />
 

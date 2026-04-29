@@ -1,9 +1,9 @@
-export async function getEcoTip(userContext?: string) {
+export async function getEcoTip(userContext?: string, lang: string = 'en') {
   try {
     const response = await fetch("/api/ai/tip", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userContext }),
+      body: JSON.stringify({ userContext, lang }),
     });
     if (!response.ok) throw new Error("Failed to fetch tip");
     const data = await response.json();
@@ -14,12 +14,12 @@ export async function getEcoTip(userContext?: string) {
   }
 }
 
-export async function chatWithEcoBot(message: string, history: { role: string, text: string }[]) {
+export async function chatWithEcoBot(message: string, history: { role: string, text: string }[], lang: string = 'en') {
   try {
     const response = await fetch("/api/ai/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message, history }),
+      body: JSON.stringify({ message, history, lang }),
     });
     if (!response.ok) throw new Error("Failed to chat with bot");
     const data = await response.json();
@@ -34,6 +34,7 @@ export async function calculateCarbonFootprint(data: {
   transport: number; // km per week
   energy: number; // kWh per month
   diet: string; // vegan, vegetarian, omnivore
+  lang?: string;
 }) {
   try {
     const response = await fetch("/api/ai/calculate", {

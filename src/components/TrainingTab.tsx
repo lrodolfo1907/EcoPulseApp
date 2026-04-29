@@ -1,11 +1,14 @@
 import { motion } from "motion/react";
 import { BookOpen, ChevronRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface TrainingTabProps {
   trainings: any[];
 }
 
 export function TrainingTab({ trainings }: TrainingTabProps) {
+  const { t } = useTranslation();
+
   return (
     <motion.div
       key="training"
@@ -15,9 +18,9 @@ export function TrainingTab({ trainings }: TrainingTabProps) {
       className="flex flex-col gap-8"
     >
       <div className="max-w-2xl">
-        <h2 className="text-3xl font-black tracking-tight">Eco-Academy</h2>
+        <h2 className="text-3xl font-black tracking-tight">{t('academy.title')}</h2>
         <p className="text-gray-500 font-medium mt-2">
-          Increase your knowledge and capacity to contribute to the community with our curated training sessions.
+          {t('academy.subtitle')}
         </p>
       </div>
 
@@ -48,7 +51,7 @@ export function TrainingTab({ trainings }: TrainingTabProps) {
                 }}
                 className="mt-6 flex items-center gap-2 text-green-700 font-bold hover:gap-4 transition-all"
               >
-                Start Learning <ChevronRight size={18} />
+                {t('academy.start')} <ChevronRight size={18} />
               </button>
             </div>
           </div>

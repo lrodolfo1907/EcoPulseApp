@@ -1,32 +1,35 @@
 import { motion } from "motion/react";
 import { BookOpen, Sprout, Users, Map, Award, MessageCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export function OnboardingTab() {
+  const { t } = useTranslation();
+
   const steps = [
     {
       icon: <Sprout size={32} className="text-green-600" />,
-      title: "1. Find Initiatives",
-      desc: "Head over to the Initiatives tab to discover local environmental projects and micro-tasks you can complete from home.",
+      title: t('onboarding.step1.title'),
+      desc: t('onboarding.step1.desc'),
     },
     {
       icon: <Users size={32} className="text-blue-600" />,
-      title: "2. Join the Community",
-      desc: "Check out the Community tab to suggest new challenges, vote on ideas, and see what other Eco-Warriors are up to.",
+      title: t('onboarding.step2.title'),
+      desc: t('onboarding.step2.desc'),
     },
     {
       icon: <Map size={32} className="text-amber-600" />,
-      title: "3. Log Your Real Impact",
-      desc: "Participate in real-life cleanup drives, tree planting events, and digital tasks to earn your Green Hours (GH).",
+      title: t('onboarding.step3.title'),
+      desc: t('onboarding.step3.desc'),
     },
     {
       icon: <Award size={32} className="text-purple-600" />,
-      title: "4. Earn Rewards",
-      desc: "Track your Green Hours in your Portfolio, climb the Leaderboard, and soon, redeem your GH for premium eco-rewards!",
+      title: t('onboarding.step4.title'),
+      desc: t('onboarding.step4.desc'),
     },
     {
       icon: <MessageCircle size={32} className="text-teal-600" />,
-      title: "5. Ask EcoBot",
-      desc: "Got questions? Try clicking the floating chat icon in the bottom right to talk to our AI EcoBot anytime.",
+      title: t('onboarding.step5.title'),
+      desc: t('onboarding.step5.desc'),
     }
   ];
 
@@ -42,9 +45,9 @@ export function OnboardingTab() {
         <div className="w-20 h-20 bg-green-50 text-green-600 rounded-3xl mx-auto flex items-center justify-center mb-6">
           <BookOpen size={40} />
         </div>
-        <h2 className="text-3xl md:text-5xl font-black mb-4 tracking-tighter">Getting Started</h2>
+        <h2 className="text-3xl md:text-5xl font-black mb-4 tracking-tighter">{t('onboarding.title')}</h2>
         <p className="text-gray-500 text-lg font-medium leading-relaxed max-w-xl mx-auto">
-          Welcome to EcoPulse! We're thrilled to have you join our global movement for environmental action. Here is how you can start making a difference today.
+          {t('onboarding.subtitle')}
         </p>
       </div>
 
@@ -69,7 +72,7 @@ export function OnboardingTab() {
       </div>
       
       <div className="text-center py-8">
-        <p className="text-gray-400 font-bold uppercase tracking-widest text-sm">You are all set. Time to explore!</p>
+        <p className="text-gray-400 font-bold uppercase tracking-widest text-sm">{t('onboarding.ready')}</p>
       </div>
     </motion.div>
   );

@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import { useTranslation } from "react-i18next";
 
 interface AdminTabProps {
   pendingChallenges: any[];
@@ -6,6 +7,8 @@ interface AdminTabProps {
 }
 
 export function AdminTab({ pendingChallenges, handleUpdateChallengeStatus }: AdminTabProps) {
+  const { t } = useTranslation();
+
   return (
     <motion.div
       key="admin"
@@ -16,19 +19,19 @@ export function AdminTab({ pendingChallenges, handleUpdateChallengeStatus }: Adm
     >
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div>
-          <h2 className="text-3xl font-black tracking-tight text-purple-900">Admin Dashboard</h2>
-          <p className="text-gray-500 font-medium">Review and manage community challenges</p>
+          <h2 className="text-3xl font-black tracking-tight text-purple-900">{t('admin.title')}</h2>
+          <p className="text-gray-500 font-medium">{t('admin.subtitle')}</p>
         </div>
       </div>
 
       <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden">
         <div className="p-6 border-b border-gray-100 bg-gray-50">
-          <h3 className="text-lg font-bold text-gray-800">Pending Challenges ({pendingChallenges.length})</h3>
+          <h3 className="text-lg font-bold text-gray-800">{t('admin.pending', { count: pendingChallenges.length })}</h3>
         </div>
         <div className="divide-y divide-gray-100">
           {pendingChallenges.length === 0 ? (
             <div className="p-8 text-center text-gray-500 font-bold">
-              No pending challenges to review.
+              {t('admin.noPending')}
             </div>
           ) : (
             pendingChallenges.map((challenge) => (
@@ -42,7 +45,7 @@ export function AdminTab({ pendingChallenges, handleUpdateChallengeStatus }: Adm
                   )}
                   <p className="text-gray-600 text-sm mb-2">{challenge.description}</p>
                   <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">
-                    Suggested by: {challenge.authorUid}
+                    {t('admin.suggestedBy', { user: challenge.authorUid })}
                   </p>
                 </div>
                 <div className="flex gap-3 w-full md:w-auto">
@@ -50,13 +53,13 @@ export function AdminTab({ pendingChallenges, handleUpdateChallengeStatus }: Adm
                     onClick={() => handleUpdateChallengeStatus(challenge.id, 'rejected')}
                     className="flex-1 md:flex-none px-6 py-3 bg-red-50 text-red-600 rounded-xl font-bold hover:bg-red-100 transition-colors"
                   >
-                    Reject
+                    {t('admin.reject')}
                   </button>
                   <button 
                     onClick={() => handleUpdateChallengeStatus(challenge.id, 'approved')}
                     className="flex-1 md:flex-none px-6 py-3 bg-green-700 text-white rounded-xl font-bold hover:bg-green-600 transition-colors shadow-md"
                   >
-                    Approve
+                    {t('admin.approve')}
                   </button>
                 </div>
               </div>

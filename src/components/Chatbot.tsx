@@ -3,11 +3,13 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Leaf, X, MessageCircle, Send } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { chatWithEcoBot } from '../services/gemini';
+import { useTranslation } from "react-i18next";
 
 export function Chatbot() {
+  const { t, i18n } = useTranslation();
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState<{role: string, text: string}[]>([
-    { role: 'model', text: "Hi! I'm EcoBot. New here? Ask me for an Onboarding guide, or check out the Guide tab!" }
+    { role: 'model', text: t('chat.welcome') }
   ]);
   const [chatInput, setChatInput] = useState("");
   const [isChatLoading, setIsChatLoading] = useState(false);
@@ -22,11 +24,11 @@ export function Chatbot() {
     setIsChatLoading(true);
     
     try {
-      const reply = await chatWithEcoBot(userMsg, chatMessages);
+      const reply = await chatWithEcoBot(userMsg, chatMessages, i18n.language);
       setChatMessages(prev => [...prev, { role: 'model', text: reply }]);
     } catch (error) {
       console.error("Chat error:", error);
-      setChatMessages(prev => [...prev, { role: 'model', text: "Sorry, I'm having trouble connecting right now." }]);
+      setChatMessages(prev => [...prev, { role: 'model', text: t('chat.error') }]);
     } finally {
       setIsChatLoading(false);
     }
@@ -89,7 +91,7 @@ export function Chatbot() {
                 type="text"
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
-                placeholder="Ask about EcoPulse or sustainability..."
+                placeholder={t('chat.placeholder')}
                 className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-green-500 transition-all"
               />
               <button 

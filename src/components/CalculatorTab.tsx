@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { Calculator as CalcIcon, RefreshCw, Share2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface CalculatorTabProps {
   calcData: { transport: number; energy: number; diet: string };
@@ -18,6 +19,8 @@ export function CalculatorTab({
   calcResult,
   handleShare
 }: CalculatorTabProps) {
+  const { t } = useTranslation();
+
   return (
     <motion.div
       key="calculator"
@@ -32,14 +35,14 @@ export function CalculatorTab({
             <CalcIcon size={32} />
           </div>
           <div>
-            <h2 className="text-3xl font-black tracking-tight">Carbon Calculator</h2>
-            <p className="text-gray-500 font-medium">Measure your weekly environmental footprint</p>
+            <h2 className="text-3xl font-black tracking-tight">{t('calculator.title')}</h2>
+            <p className="text-gray-500 font-medium">{t('calculator.subtitle')}</p>
           </div>
         </div>
 
         <div className="space-y-8">
           <div className="group">
-            <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-3 group-focus-within:text-green-600 transition-colors">Transport (km/week)</label>
+            <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-3 group-focus-within:text-green-600 transition-colors">{t('calculator.transport')}</label>
             <input 
               type="number" 
               value={calcData.transport}
@@ -48,7 +51,7 @@ export function CalculatorTab({
             />
           </div>
           <div className="group">
-            <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-3 group-focus-within:text-green-600 transition-colors">Energy Usage (kWh/month)</label>
+            <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-3 group-focus-within:text-green-600 transition-colors">{t('calculator.energy')}</label>
             <input 
               type="number" 
               value={calcData.energy}
@@ -57,15 +60,15 @@ export function CalculatorTab({
             />
           </div>
           <div className="group">
-            <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-3 group-focus-within:text-green-600 transition-colors">Diet Type</label>
+            <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-3 group-focus-within:text-green-600 transition-colors">{t('calculator.diet')}</label>
             <select 
               value={calcData.diet}
               onChange={(e) => setCalcData({...calcData, diet: e.target.value})}
               className="w-full p-5 bg-gray-50 border border-gray-200 rounded-[1.5rem] outline-none focus:ring-4 focus:ring-green-500/10 focus:border-green-500 transition-all text-lg font-bold appearance-none"
             >
-              <option value="omnivore">Omnivore</option>
-              <option value="vegetarian">Vegetarian</option>
-              <option value="vegan">Vegan</option>
+              <option value="omnivore">{t('calculator.omnivore')}</option>
+              <option value="vegetarian">{t('calculator.vegetarian')}</option>
+              <option value="vegan">{t('calculator.vegan')}</option>
             </select>
           </div>
 
@@ -75,7 +78,7 @@ export function CalculatorTab({
             className="w-full py-5 bg-green-700 hover:bg-green-600 text-white rounded-[1.5rem] font-bold text-xl shadow-2xl shadow-green-200 transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
           >
             {isCalcLoading ? <RefreshCw className="animate-spin" /> : <CalcIcon />}
-            {isCalcLoading ? "Analyzing..." : "Calculate My Impact"}
+            {isCalcLoading ? t('calculator.analyzing') : t('calculator.calculate')}
           </button>
         </div>
 
@@ -86,7 +89,7 @@ export function CalculatorTab({
             className="mt-12 p-8 bg-green-50 rounded-[2.5rem] border border-green-100 relative overflow-hidden"
           >
             <div className="relative z-10">
-              <h3 className="text-sm font-bold text-green-800 uppercase tracking-[0.2em] mb-6 text-center">Weekly Footprint</h3>
+              <h3 className="text-sm font-bold text-green-800 uppercase tracking-[0.2em] mb-6 text-center">{t('calculator.resultTitle')}</h3>
               <div className="text-center mb-8">
                 <span className="text-7xl font-black text-green-700">{calcResult.total}</span>
                 <span className="text-green-700 font-bold ml-3 text-xl">kg CO2e</span>
@@ -106,7 +109,7 @@ export function CalculatorTab({
                 onClick={() => handleShare("linkedin")}
                 className="mt-6 w-full py-3 bg-white border border-green-200 text-green-700 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-green-50 transition-all"
               >
-                <Share2 size={18} /> Share Result
+                <Share2 size={18} /> {t('calculator.share')}
               </button>
             </div>
           </motion.div>

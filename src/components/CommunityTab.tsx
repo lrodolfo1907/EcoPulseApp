@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "motion/react";
 import { PlusCircle, Award } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface CommunityTabProps {
   isChallengesLoading: boolean;
@@ -24,6 +25,8 @@ export function CommunityTab({
   handleSuggestChallenge,
   handleJoinChallenge
 }: CommunityTabProps) {
+  const { t } = useTranslation();
+
   return (
     <motion.div
       key="community"
@@ -34,20 +37,20 @@ export function CommunityTab({
     >
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div>
-          <h2 className="text-3xl font-black tracking-tight">Community Challenges</h2>
-          <p className="text-gray-500 font-medium">Join global movements or suggest your own</p>
+          <h2 className="text-3xl font-black tracking-tight">{t('community.title')}</h2>
+          <p className="text-gray-500 font-medium">{t('community.subtitle')}</p>
         </div>
         <button 
           onClick={() => setIsSuggesting(true)}
           className="bg-green-700 text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-green-600 transition-all shadow-lg"
         >
-          <PlusCircle size={20} /> Suggest Challenge
+          <PlusCircle size={20} /> {t('community.suggest')}
         </button>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {isChallengesLoading ? (
-          <p className="text-gray-500 font-bold">Loading challenges...</p>
+          <p className="text-gray-500 font-bold">{t('community.loading')}</p>
         ) : challenges.length > 0 ? (
           challenges.map((challenge) => (
             <div key={challenge.id} className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all cursor-pointer group">
@@ -66,12 +69,12 @@ export function CommunityTab({
                 disabled={joinedChallengeIds.includes(challenge.id)}
                 className={`w-full py-2.5 rounded-xl text-sm font-bold transition-all ${joinedChallengeIds.includes(challenge.id) ? 'bg-green-100 text-green-800 cursor-not-allowed' : 'bg-gray-50 text-gray-600 hover:bg-green-700 hover:text-white'}`}
               >
-                {joinedChallengeIds.includes(challenge.id) ? 'Joined' : 'Join Challenge'}
+                {joinedChallengeIds.includes(challenge.id) ? t('community.joined') : t('community.join')}
               </button>
             </div>
           ))
         ) : (
-          // Fallback mock data if no approved challenges exist yet
+          // Fallback mock data
           [
             { title: "No Plastic Week", participants: 1240, daysLeft: 3, icon: Award, progress: 65, category: "Waste Reduction" },
             { title: "Cycle to Work", participants: 850, daysLeft: 5, icon: Award, progress: 40, category: "Climate Action" },
@@ -87,18 +90,18 @@ export function CommunityTab({
               </span>
               <h4 className="text-lg font-bold mb-2 leading-tight">{challenge.title}</h4>
               <div className="flex items-center justify-between text-xs font-bold text-gray-400 mb-4">
-                <span>{challenge.participants} joined</span>
-                <span className="text-green-600">{challenge.daysLeft}d left</span>
+                <span>{t('community.joinedCount', { count: challenge.participants })}</span>
+                <span className="text-green-600">{t('community.daysLeft', { count: challenge.daysLeft })}</span>
               </div>
               <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden mb-6">
                 <div className="bg-green-600 h-full transition-all" style={{ width: `${challenge.progress}%` }} />
               </div>
               <button 
-                onClick={() => handleJoinChallenge(challenge.title)} // Using title as ID for mock data
+                onClick={() => handleJoinChallenge(challenge.title)}
                 disabled={joinedChallengeIds.includes(challenge.title)}
                 className={`w-full py-2.5 rounded-xl text-sm font-bold transition-all ${joinedChallengeIds.includes(challenge.title) ? 'bg-green-100 text-green-800 cursor-not-allowed' : 'bg-gray-50 text-gray-600 hover:bg-green-700 hover:text-white'}`}
               >
-                {joinedChallengeIds.includes(challenge.title) ? 'Joined' : 'Join Challenge'}
+                {joinedChallengeIds.includes(challenge.title) ? t('community.joined') : t('community.join')}
               </button>
             </div>
           ))
@@ -122,11 +125,11 @@ export function CommunityTab({
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               className="bg-white w-full max-w-lg rounded-[2.5rem] p-8 relative z-10 shadow-2xl"
             >
-              <h3 className="text-2xl font-bold mb-2">Suggest a Challenge</h3>
-              <p className="text-gray-500 font-medium mb-8">Your idea will be validated by admins before going live.</p>
+              <h3 className="text-2xl font-bold mb-2">{t('community.suggestTitle')}</h3>
+              <p className="text-gray-500 font-medium mb-8">{t('community.suggestDesc')}</p>
               <div className="space-y-6">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Challenge Title</label>
+                  <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">{t('community.inputTitle')}</label>
                   <input 
                     type="text" 
                     value={suggestion.title}
@@ -136,7 +139,7 @@ export function CommunityTab({
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Description</label>
+                  <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">{t('community.inputDesc')}</label>
                   <textarea 
                     rows={4}
                     value={suggestion.description}
@@ -146,7 +149,7 @@ export function CommunityTab({
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Category</label>
+                  <label className="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">{t('community.inputCat')}</label>
                   <select
                     value={suggestion.category}
                     onChange={(e) => setSuggestion({...suggestion, category: e.target.value})}
@@ -163,13 +166,13 @@ export function CommunityTab({
                     onClick={() => setIsSuggesting(false)}
                     className="flex-1 py-4 bg-gray-100 text-gray-600 rounded-2xl font-bold hover:bg-gray-200 transition-all"
                   >
-                    Cancel
+                    {t('common.cancel')}
                   </button>
                   <button 
                     onClick={handleSuggestChallenge}
                     className="flex-1 py-4 bg-green-700 text-white rounded-2xl font-bold hover:bg-green-600 transition-all shadow-lg shadow-green-200"
                   >
-                    Submit Idea
+                    {t('community.submit')}
                   </button>
                 </div>
               </div>

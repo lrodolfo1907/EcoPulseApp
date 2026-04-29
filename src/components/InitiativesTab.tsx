@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { Search, MapPin, Globe, Clock, CheckCircle2 } from "lucide-react";
 import { cn } from "../lib/utils";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface InitiativesTabProps {
   initiativeType: string;
@@ -22,6 +23,7 @@ export function InitiativesTab({
   fetchInitiatives,
   handleJoinInitiative
 }: InitiativesTabProps) {
+  const { t } = useTranslation();
   const [hideJoined, setHideJoined] = useState(true);
   const [activeCategory, setActiveCategory] = useState("All");
 
@@ -45,15 +47,15 @@ export function InitiativesTab({
     >
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Environmental Initiatives</h2>
-          <p className="text-gray-500 font-medium">Find ways to contribute and earn Green Hours</p>
+          <h2 className="text-3xl font-bold tracking-tight">{t('initiatives.title')}</h2>
+          <p className="text-gray-500 font-medium">{t('initiatives.subtitle')}</p>
         </div>
         <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
           <button 
             onClick={() => setHideJoined(!hideJoined)}
             className="px-4 py-2 text-sm font-bold bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
           >
-            {hideJoined ? "Show Joined" : "Hide Joined"}
+            {hideJoined ? t('initiatives.showJoined') : t('initiatives.hideJoined')}
           </button>
           <div className="flex bg-white p-1.5 rounded-2xl border border-gray-200 shadow-sm">
             <button 
@@ -63,7 +65,7 @@ export function InitiativesTab({
                 initiativeType === "local" ? "bg-green-700 text-white shadow-lg" : "text-gray-500 hover:bg-gray-50"
               )}
             >
-              Local
+              {t('initiatives.local')}
             </button>
             <button 
               onClick={() => { setInitiativeType("global"); fetchInitiatives("global"); }}
@@ -72,7 +74,7 @@ export function InitiativesTab({
                 initiativeType === "global" ? "bg-green-700 text-white shadow-lg" : "text-gray-500 hover:bg-gray-50"
               )}
             >
-              Global
+              {t('initiatives.global')}
             </button>
           </div>
         </div>
@@ -99,8 +101,8 @@ export function InitiativesTab({
         <div className="bg-gray-100/50 rounded-[2rem] border border-gray-200 p-6 flex flex-col items-center justify-center text-center overflow-hidden relative shadow-inner h-48 md:h-64 my-6">
           <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'url("https://www.transparenttextures.com/patterns/cartographer.png")' }}></div>
           <MapPin size={40} className="text-gray-400 mb-3 relative z-10" />
-          <h3 className="text-xl font-bold text-gray-800 relative z-10">Map View Available Soon</h3>
-          <p className="text-gray-500 font-medium max-w-sm mt-2 relative z-10">We're integrating mapping to help you easily locate and track these local initiatives right from your neighborhood.</p>
+          <h3 className="text-xl font-bold text-gray-800 relative z-10">{t('initiatives.mapSoonTitle')}</h3>
+          <p className="text-gray-500 font-medium max-w-sm mt-2 relative z-10">{t('initiatives.mapSoonDesc')}</p>
         </div>
       )}
 
@@ -111,7 +113,7 @@ export function InitiativesTab({
           ))
         ) : filteredInitiatives.length === 0 ? (
           <div className="col-span-full text-center py-12 bg-white rounded-[2rem] border border-gray-100">
-            <p className="text-gray-500 font-medium">No initiatives found. Try showing joined initiatives or changing your location preference.</p>
+            <p className="text-gray-500 font-medium">{t('initiatives.noFound')}</p>
           </div>
         ) : (
           filteredInitiatives.map((item) => {
@@ -129,7 +131,7 @@ export function InitiativesTab({
                     "text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full",
                     item.taskType === "micro" ? "bg-purple-50 text-purple-600" : "bg-blue-50 text-blue-600"
                   )}>
-                    {item.taskType === "micro" ? "Micro Task" : "Regular Task"} {item.time && `• ${item.time}`}
+                    {item.taskType === "micro" ? t('initiatives.microTask') : t('initiatives.regularTask')} {item.time && `• ${item.time}`}
                   </span>
                   {item.category && (
                     <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-green-50 text-green-700 ml-2">
@@ -138,7 +140,7 @@ export function InitiativesTab({
                   )}
                   {item.verified && (
                     <span className="text-[10px] font-bold uppercase tracking-widest bg-green-50 text-green-700 px-3 py-1 rounded-full flex items-center gap-1">
-                      <CheckCircle2 size={12} /> Verified
+                      <CheckCircle2 size={12} /> {t('initiatives.verified')}
                     </span>
                   )}
                 </div>
@@ -152,21 +154,21 @@ export function InitiativesTab({
               <div className="mt-8 flex items-center justify-between">
                 <div className="flex items-center gap-1.5">
                   <Clock size={16} className="text-green-600" />
-                  <span className="text-sm font-bold text-green-700">+{item.hours} Green Hours</span>
+                  <span className="text-sm font-bold text-green-700">{t('plusPoints', { hours: item.hours })}</span>
                 </div>
                 {isJoined ? (
                   <button 
                     disabled
                     className="bg-green-100 text-green-800 px-6 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 cursor-not-allowed"
                   >
-                    <CheckCircle2 size={16} /> Joined
+                    <CheckCircle2 size={16} /> {t('common.joined')}
                   </button>
                 ) : (
                   <button 
                     onClick={() => handleJoinInitiative(item.id, item.hours)}
                     className="bg-gray-900 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-green-700 transition-all"
                   >
-                    Join Now
+                    {t('initiatives.joinNow')}
                   </button>
                 )}
               </div>

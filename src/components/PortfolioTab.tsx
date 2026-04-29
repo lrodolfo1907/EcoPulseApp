@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { Share2, User, Edit2, Award, MapPin, BookOpen, Lock } from "lucide-react";
 import { useAuth } from '../hooks';
 import { cn } from '../lib/utils';
+import { useTranslation } from "react-i18next";
 
 interface PortfolioTabProps {
   portfolioStats: { joined: number; completed: number };
@@ -11,13 +12,6 @@ interface PortfolioTabProps {
   setIsEditingProfile: (val: boolean) => void;
 }
 
-const BADGES = [
-  { id: "seedling", name: "Seedling", threshold: 1, icon: "🌱", description: "Earned your first green hour" },
-  { id: "sprout", name: "Sprout", threshold: 10, icon: "🌿", description: "Reached 10 green hours" },
-  { id: "sapling", name: "Sapling", threshold: 50, icon: "🌳", description: "Reached 50 green hours" },
-  { id: "guardian", name: "Forest Guardian", threshold: 150, icon: "🛡️", description: "Reached 150 green hours" },
-];
-
 export function PortfolioTab({
   portfolioStats,
   isPortfolioLoading,
@@ -25,9 +19,17 @@ export function PortfolioTab({
   handleShare,
   setIsEditingProfile
 }: PortfolioTabProps) {
+  const { t } = useTranslation();
   const { user, userBio, greenHours: actualGreenHours } = useAuth();
   // Override green hours for the specific user so they unlock the badges and see total 185
   const greenHours = user?.email === 'lpires1907@gmail.com' ? Math.max(actualGreenHours, 185) : actualGreenHours;
+
+  const BADGES = [
+    { id: "seedling", name: t('portfolio.badges.seedling'), threshold: 1, icon: "🌱", description: t('portfolio.badges.seedlingDesc') },
+    { id: "sprout", name: t('portfolio.badges.sprout'), threshold: 10, icon: "🌿", description: t('portfolio.badges.sproutDesc') },
+    { id: "sapling", name: t('portfolio.badges.sapling'), threshold: 50, icon: "🌳", description: t('portfolio.badges.saplingDesc') },
+    { id: "guardian", name: t('portfolio.badges.guardian'), threshold: 150, icon: "🛡️", description: t('portfolio.badges.guardianDesc') },
+  ];
   
   return (
     <motion.div
@@ -39,8 +41,8 @@ export function PortfolioTab({
     >
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div>
-          <h2 className="text-3xl font-black tracking-tight">Impact Portfolio</h2>
-          <p className="text-gray-500 font-medium">Your journey towards a greener future</p>
+          <h2 className="text-3xl font-black tracking-tight">{t('portfolio.title')}</h2>
+          <p className="text-gray-500 font-medium">{t('portfolio.subtitle')}</p>
         </div>
         <div className="flex gap-3">
           <button onClick={() => handleShare("linkedin")} className="p-3 bg-white border border-gray-200 rounded-2xl text-blue-600 hover:bg-blue-50 transition-all">
@@ -50,7 +52,7 @@ export function PortfolioTab({
             <Share2 size={24} />
           </button>
           <button onClick={() => handleShare("general")} className="bg-green-700 text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-green-600 transition-all shadow-lg">
-            <Share2 size={20} /> Share Portfolio
+            <Share2 size={20} /> {t('portfolio.share')}
           </button>
         </div>
       </div>
@@ -67,15 +69,15 @@ export function PortfolioTab({
             )}
           </div>
           <div className="relative z-10 flex-1 text-center md:text-left">
-            <h3 className="text-2xl font-bold">{user.displayName || "Eco Warrior"}</h3>
+            <h3 className="text-2xl font-bold">{user.displayName || t('common.ecoWarrior')}</h3>
             <p className="text-gray-500 font-medium mb-2">{user.email}</p>
-            <p className="text-gray-700 italic">{userBio || "Add a bio to tell the community about your eco-journey!"}</p>
+            <p className="text-gray-700 italic">{userBio || t('portfolio.bioPlaceholder')}</p>
           </div>
           <button 
             onClick={() => setIsEditingProfile(true)}
             className="relative z-10 bg-white border border-gray-200 text-gray-700 px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-gray-50 transition-all shadow-sm"
           >
-            <Edit2 size={18} /> Edit Profile
+            <Edit2 size={18} /> {t('portfolio.editProfile')}
           </button>
         </div>
       )}
@@ -83,8 +85,8 @@ export function PortfolioTab({
       <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h3 className="text-2xl font-bold">My Badges</h3>
-            <p className="text-gray-500 font-medium">Unlock achievements by earning green hours</p>
+            <h3 className="text-2xl font-bold">{t('portfolio.badgesTitle')}</h3>
+            <p className="text-gray-500 font-medium">{t('portfolio.badgesSubtitle')}</p>
           </div>
           <Award size={32} className="text-yellow-500" />
         </div>
@@ -103,25 +105,25 @@ export function PortfolioTab({
                 )}
               >
                 <div className="text-5xl mb-4 relative drop-shadow-md">
-                  {badge.icon}
-                  {!unlocked && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-white/40 rounded-full backdrop-blur-[2px]">
-                      <Lock size={24} className="text-gray-700" />
-                    </div>
-                  )}
+                   {badge.icon}
+                   {!unlocked && (
+                     <div className="absolute inset-0 flex items-center justify-center bg-white/40 rounded-full backdrop-blur-[2px]">
+                       <Lock size={24} className="text-gray-700" />
+                     </div>
+                   )}
                 </div>
                 <h4 className={cn("font-black mb-1", unlocked ? "text-green-900" : "text-gray-700")}>
                   {badge.name}
                 </h4>
                 <p className="text-xs text-wrap text-gray-500 font-medium mb-4 h-8 flex items-center justify-center">
-                  {unlocked ? badge.description : `Unlocks at ${badge.threshold} hrs`}
+                  {unlocked ? badge.description : t('portfolio.unlocksAt', { threshold: badge.threshold })}
                 </p>
                 {unlocked && (
                   <button 
                     onClick={() => handleShare("badge", badge.name)}
                     className="mt-auto flex items-center justify-center gap-1.5 w-full py-2 bg-white text-green-700 text-xs font-bold rounded-xl border border-green-200 hover:bg-green-100 transition-colors"
                   >
-                    <Share2 size={12} /> Share
+                    <Share2 size={12} /> {t('common.share')}
                   </button>
                 )}
               </div>
@@ -136,25 +138,25 @@ export function PortfolioTab({
             <Award size={64} />
           </div>
           <h3 className="text-4xl font-black text-green-700 mb-2">{greenHours}</h3>
-          <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Total Green Hours Earned</p>
+          <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">{t('portfolio.totalHours')}</p>
           <div className="mt-8 pt-8 border-t border-gray-50 space-y-4">
             <div className="flex justify-between items-center">
-              <span className="text-sm font-bold text-gray-500">Rank</span>
+              <span className="text-sm font-bold text-gray-500">{t('portfolio.rank')}</span>
               <span className="text-sm font-bold text-green-700">Eco-Guardian</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm font-bold text-gray-500">Initiatives Joined</span>
+              <span className="text-sm font-bold text-gray-500">{t('portfolio.joined')}</span>
               <span className="text-sm font-bold">{isPortfolioLoading ? "..." : portfolioStats.joined}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm font-bold text-gray-500">Initiatives Completed</span>
+              <span className="text-sm font-bold text-gray-500">{t('portfolio.completed')}</span>
               <span className="text-sm font-bold">{isPortfolioLoading ? "..." : portfolioStats.completed}</span>
             </div>
           </div>
         </div>
 
         <div className="lg:col-span-2 space-y-6">
-          <h3 className="text-xl font-bold">Recent Activity</h3>
+          <h3 className="text-xl font-bold">{t('portfolio.activity')}</h3>
           {recentActivity.length > 0 ? recentActivity.map((activity, i) => (
             <div key={i} className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm flex items-center justify-between group hover:border-green-200 transition-all">
               <div className="flex items-center gap-4">
@@ -172,7 +174,7 @@ export function PortfolioTab({
             </div>
           )) : (
             <div className="bg-gray-50 p-8 rounded-3xl text-center">
-              <p className="text-gray-500 font-medium">No recent activity yet. Join an initiative to start earning Green Hours!</p>
+              <p className="text-gray-500 font-medium">{t('portfolio.noActivity')}</p>
             </div>
           )}
         </div>

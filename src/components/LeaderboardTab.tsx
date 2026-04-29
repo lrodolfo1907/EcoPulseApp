@@ -3,17 +3,19 @@ import { motion } from 'motion/react';
 import { Award, Globe, MapPin } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useAuth } from '../hooks';
-
-const BADGES = [
-  { id: "seedling", name: "Seedling", threshold: 1, icon: "🌱", description: "Earned your first green hour" },
-  { id: "sprout", name: "Sprout", threshold: 10, icon: "🌿", description: "Reached 10 green hours" },
-  { id: "sapling", name: "Sapling", threshold: 50, icon: "🌳", description: "Reached 50 green hours" },
-  { id: "guardian", name: "Forest Guardian", threshold: 150, icon: "🛡️", description: "Reached 150 green hours" },
-];
+import { useTranslation } from 'react-i18next';
 
 export function LeaderboardTab() {
+  const { t } = useTranslation();
   const [activeView, setActiveView] = useState<'global' | 'local'>('global');
   const { user } = useAuth();
+
+  const BADGES = [
+    { id: "seedling", name: t('portfolio.badges.seedling'), threshold: 1, icon: "🌱", description: t('portfolio.badges.seedlingDesc') },
+    { id: "sprout", name: t('portfolio.badges.sprout'), threshold: 10, icon: "🌿", description: t('portfolio.badges.sproutDesc') },
+    { id: "sapling", name: t('portfolio.badges.sapling'), threshold: 50, icon: "🌳", description: t('portfolio.badges.saplingDesc') },
+    { id: "guardian", name: t('portfolio.badges.guardian'), threshold: 150, icon: "🛡️", description: t('portfolio.badges.guardianDesc') },
+  ];
 
   let globalUsers: any[] = [
     { rank: 1, name: "Eco Ninja", hours: 450, impact: "Planted 50 Trees", color: "bg-yellow-100 text-yellow-700", rankColor: "text-yellow-600", location: "Brazil" },
@@ -33,7 +35,7 @@ export function LeaderboardTab() {
 
   if (user?.email === 'lpires1907@gmail.com') {
     const me = {
-      name: user.displayName || "You",
+      name: user.displayName || t('leaderboard.me'),
       hours: 185,
       impact: "Eco-Guardian Activities",
       color: "bg-green-100 text-green-800 border-2 border-green-500 shadow-sm",
@@ -65,10 +67,10 @@ export function LeaderboardTab() {
         <div>
           <h2 className="text-4xl md:text-5xl font-black tracking-tight text-gray-900 mb-2 flex items-center gap-4">
             <span className="bg-yellow-100 text-yellow-600 p-2 rounded-2xl"><Award size={36} /></span>
-            Leaderboard
+            {t('leaderboard.title')}
           </h2>
           <p className="text-lg text-gray-500 font-medium">
-            Top Eco Warriors making the biggest impact
+            {t('leaderboard.subtitle')}
           </p>
         </div>
       </div>
@@ -82,7 +84,7 @@ export function LeaderboardTab() {
           )}
         >
           <Globe size={20} />
-          Global
+          {t('leaderboard.global')}
         </button>
         <button
           onClick={() => setActiveView('local')}
@@ -92,7 +94,7 @@ export function LeaderboardTab() {
           )}
         >
           <MapPin size={20} />
-          Local
+          {t('leaderboard.local')}
         </button>
       </div>
 
@@ -129,7 +131,7 @@ export function LeaderboardTab() {
               </div>
               <div className="text-right">
                 <span className="font-black text-2xl md:text-3xl text-green-600 block leading-none">{user.hours}</span>
-                <span className="text-xs text-gray-400 font-bold uppercase tracking-wider">Hours</span>
+                <span className="text-xs text-gray-400 font-bold uppercase tracking-wider">{t('leaderboard.hours')}</span>
               </div>
             </motion.div>
           ))}

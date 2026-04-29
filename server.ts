@@ -41,14 +41,21 @@ async function startServer() {
   // AI Routes
   app.post("/api/ai/tip", async (req, res) => {
     try {
-      const { userContext } = req.body;
+      const { userContext, lang = 'en' } = req.body;
       const ai = getGenAI();
       if (!ai) return res.status(503).json({ error: "AI service unavailable" });
+
+      const langMap: Record<string, string> = {
+        'pt': 'Portuguese',
+        'es': 'Spanish',
+        'en': 'English'
+      };
+      const responseLang = langMap[lang] || 'English';
 
       const result = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
         config: {
-          systemInstruction: "You are an expert sustainability consultant. Your tips are concise, evidence-based, and encouraging. Avoid generic advice like 'recycle more' unless it's a specific, lesser-known recycling tip.",
+          systemInstruction: `You are an expert sustainability consultant. Your tips are concise, evidence-based, and encouraging. Respond in ${responseLang}. Avoid generic advice like 'recycle more' unless it's a specific, lesser-known recycling tip.`,
         },
         contents: `Provide a short, actionable, and surprising sustainability tip. ${userContext ? `Context: ${userContext}` : ""}`
       });
@@ -61,9 +68,16 @@ async function startServer() {
 
   app.post("/api/ai/chat", async (req, res) => {
     try {
-      const { message, history } = req.body;
+      const { message, history, lang = 'en' } = req.body;
       const ai = getGenAI();
       if (!ai) return res.status(503).json({ error: "AI service unavailable" });
+
+      const langMap: Record<string, string> = {
+        'pt': 'Portuguese',
+        'es': 'Spanish',
+        'en': 'English'
+      };
+      const responseLang = langMap[lang] || 'English';
 
       const contents = history.map((msg: any) => ({
         role: msg.role === 'user' ? 'user' : 'model',
@@ -74,7 +88,7 @@ async function startServer() {
       const result = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
         config: {
-          systemInstruction: "You are EcoBot, the official assistant for the EcoPulse app. Answer questions about the app's features (Carbon Calculator, Local/Global Initiatives, Eco-Academy Training, Community Challenges, Green Hours) and general environmental/sustainability topics. Be concise, friendly, and encouraging. If asked about unrelated topics, politely steer the conversation back to sustainability or the app.",
+          systemInstruction: `You are EcoBot, the official assistant for the EcoPulse app. Respond in ${responseLang}. Answer questions about the app's features (Carbon Calculator, Local/Global Initiatives, Eco-Academy Training, Community Challenges, Green Hours) and general environmental/sustainability topics. Be concise, friendly, and encouraging. If asked about unrelated topics, politely steer the conversation back to sustainability or the app.`,
         },
         contents
       });
@@ -87,15 +101,22 @@ async function startServer() {
 
   app.post("/api/ai/calculate", async (req, res) => {
     try {
-      const { transport, energy, diet } = req.body;
+      const { transport, energy, diet, lang = 'en' } = req.body;
       const ai = getGenAI();
       if (!ai) return res.status(503).json({ error: "AI service unavailable" });
+
+      const langMap: Record<string, string> = {
+        'pt': 'Portuguese',
+        'es': 'Spanish',
+        'en': 'English'
+      };
+      const responseLang = langMap[lang] || 'English';
 
       const prompt = `Calculate the estimated weekly carbon footprint (kg CO2e) for: 
         - Transport: ${transport} km/week
         - Energy: ${energy} kWh/month
         - Diet: ${diet}
-        Return ONLY a JSON object with 'total', 'breakdown' (object with transport, energy, diet), and 'suggestion'.`;
+        Return ONLY a JSON object with 'total', 'breakdown' (object with transport, energy, diet), and 'suggestion' (in ${responseLang}).`;
 
       const result = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
