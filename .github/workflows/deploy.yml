@@ -3,7 +3,7 @@ name: Build and Deploy to Cloud Run & Firebase
 on:
   push:
     branches:
-      - main  # Adjust this to your branch name (e.g., master)
+      - main  # Verify if your branch is 'main' or 'master'
 
 jobs:
   deploy:
@@ -15,27 +15,26 @@ jobs:
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CARTOLAFC_485703 }}
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Build and Push Container
-        run: |
-          gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/ecopulseapp .
-          
-      - name: Deploy to Cloud Run
+      - name: Deploy to Cloud Run (Source-based)
         run: |
           gcloud run deploy ecopulseapp \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/ecopulseapp \
+            --source . \
             --region us-central1 \
+            --project ${{ secrets.GCP_PROJECT_ID }} \
             --platform managed \
-            --allow-unauthenticated
+            --allow-unauthenticated \
+            --port 3000 \
+            --set-env-vars GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
 
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.GCP_SA_KEY }}"
-          projectId: cartolafc-485703
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_CARTOLAFC_485703 }}"
+          projectId: ${{ secrets.GCP_PROJECT_ID }}
           channelId: live
