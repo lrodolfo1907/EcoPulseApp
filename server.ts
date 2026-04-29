@@ -18,14 +18,14 @@ function getGenAI() {
       console.error("GEMINI_API_KEY is not set.");
       return null;
     }
-    genAI = new GoogleGenAI(apiKey);
+    genAI = new GoogleGenAI({ apiKey });
   }
   return genAI;
 }
 
 async function startServer() {
   const app = express();
-  const PORT = process.env.PORT || 3000;
+  const PORT = 3000;
   const isProduction = process.env.NODE_ENV === "production" || process.env.NODE_ENV === "prod";
 
   console.log(`[EcoPulse] Mode: ${isProduction ? "PRODUCTION" : "DEVELOPMENT"}`);
@@ -45,14 +45,14 @@ async function startServer() {
       const ai = getGenAI();
       if (!ai) return res.status(503).json({ error: "AI service unavailable" });
 
-      const model = ai.getGenerativeModel({
-        model: "gemini-1.5-flash",
-        systemInstruction: "You are an expert sustainability consultant. Your tips are concise, evidence-based, and encouraging. Avoid generic advice like 'recycle more' unless it's a specific, lesser-known recycling tip.",
+      const result = await ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        config: {
+          systemInstruction: "You are an expert sustainability consultant. Your tips are concise, evidence-based, and encouraging. Avoid generic advice like 'recycle more' unless it's a specific, lesser-known recycling tip.",
+        },
+        contents: `Provide a short, actionable, and surprising sustainability tip. ${userContext ? `Context: ${userContext}` : ""}`
       });
-
-      const result = await model.generateContent(`Provide a short, actionable, and surprising sustainability tip. ${userContext ? `Context: ${userContext}` : ""}`);
-      const response = await result.response;
-      res.json({ text: response.text() });
+      res.json({ text: result.text });
     } catch (error) {
       console.error("AI Tip Error:", error);
       res.status(500).json({ error: "Failed to generate tip" });
@@ -65,20 +65,20 @@ async function startServer() {
       const ai = getGenAI();
       if (!ai) return res.status(503).json({ error: "AI service unavailable" });
 
-      const model = ai.getGenerativeModel({
-        model: "gemini-1.5-flash",
-        systemInstruction: "You are EcoBot, the official assistant for the EcoPulse app. Answer questions about the app's features (Carbon Calculator, Local/Global Initiatives, Eco-Academy Training, Community Challenges, Green Hours) and general environmental/sustainability topics. Be concise, friendly, and encouraging. If asked about unrelated topics, politely steer the conversation back to sustainability or the app.",
-      });
-
       const contents = history.map((msg: any) => ({
         role: msg.role === 'user' ? 'user' : 'model',
         parts: [{ text: msg.text }]
       }));
       contents.push({ role: 'user', parts: [{ text: message }] });
 
-      const result = await model.generateContent({ contents });
-      const response = await result.response;
-      res.json({ text: response.text() });
+      const result = await ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        config: {
+          systemInstruction: "You are EcoBot, the official assistant for the EcoPulse app. Answer questions about the app's features (Carbon Calculator, Local/Global Initiatives, Eco-Academy Training, Community Challenges, Green Hours) and general environmental/sustainability topics. Be concise, friendly, and encouraging. If asked about unrelated topics, politely steer the conversation back to sustainability or the app.",
+        },
+        contents
+      });
+      res.json({ text: result.text });
     } catch (error) {
       console.error("AI Chat Error:", error);
       res.status(500).json({ error: "Failed to process chat" });
@@ -91,22 +91,20 @@ async function startServer() {
       const ai = getGenAI();
       if (!ai) return res.status(503).json({ error: "AI service unavailable" });
 
-      const model = ai.getGenerativeModel({
-        model: "gemini-1.5-flash",
-        generationConfig: {
-          responseMimeType: "application/json",
-        },
-      });
-
       const prompt = `Calculate the estimated weekly carbon footprint (kg CO2e) for: 
         - Transport: ${transport} km/week
         - Energy: ${energy} kWh/month
         - Diet: ${diet}
         Return ONLY a JSON object with 'total', 'breakdown' (object with transport, energy, diet), and 'suggestion'.`;
 
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      res.json(JSON.parse(response.text()));
+      const result = await ai.models.generateContent({
+        model: "gemini-3-flash-preview",
+        config: {
+          responseMimeType: "application/json",
+        },
+        contents: prompt
+      });
+      res.json(JSON.parse(result.text || '{}'));
     } catch (error) {
       console.error("AI Calculate Error:", error);
       res.status(500).json({ error: "Failed to calculate footprint" });
