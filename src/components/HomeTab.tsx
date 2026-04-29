@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'motion/react';
 import { Leaf, Share2, Sparkles, RefreshCw, Globe, Zap, Droplets, MapPin, ChevronRight, BookOpen } from 'lucide-react';
 import { cn } from '../lib/utils';
@@ -24,6 +25,7 @@ export function HomeTab({
   onTakeSurvey
 }: HomeTabProps) {
   const { user, greenHours: actualGreenHours } = useAuth();
+  const { t } = useTranslation();
   const greenHours = user?.email === 'lpires1907@gmail.com' ? Math.max(actualGreenHours, 185) : actualGreenHours;
 
   const handleShare = (platform: string) => {
@@ -52,24 +54,24 @@ export function HomeTab({
             transition={{ delay: 0.2 }}
           >
             <h2 className="text-4xl lg:text-5xl font-black leading-tight">
-              Hello, {user?.displayName?.split(' ')[0] || 'Eco Warrior'}! <br />
-              Ready to <span className="text-green-300 underline decoration-4 underline-offset-8">save the planet?</span>
+              {t('common.hello')}, {user?.displayName?.split(' ')[0] || t('common.ecoWarrior')}! <br />
+              {t('home.hero.title', { action: t('home.hero.action'), interpolation: { escapeValue: false } })}
             </h2>
             <p className="mt-6 text-green-100 text-lg leading-relaxed opacity-90">
-              You've earned {greenHours} Green Hours. That's equivalent to planting {Math.floor(greenHours * 0.3)} trees this month. Keep up the amazing work!
+              {t('home.hero.impact', { hours: greenHours, trees: Math.floor(greenHours * 0.3) })}
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <button 
                 onClick={() => handleShare("linkedin")}
                 className="bg-white text-green-700 px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-green-50 transition-all shadow-lg"
               >
-                <Share2 size={20} /> Export to LinkedIn
+                <Share2 size={20} /> {t('home.hero.linkedin')}
               </button>
               <button 
                 onClick={() => handleShare("instagram")}
                 className="bg-green-600 text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-green-500 transition-all border border-green-500"
               >
-                <Share2 size={20} /> Share on Instagram
+                <Share2 size={20} /> {t('home.hero.instagram')}
               </button>
             </div>
           </motion.div>
@@ -82,14 +84,14 @@ export function HomeTab({
       {/* Survey Banner */}
       <section className="bg-yellow-50 rounded-[2.5rem] p-8 border border-yellow-100 flex flex-col xl:flex-row items-center justify-between gap-6 shadow-sm">
         <div>
-          <h3 className="text-2xl font-bold text-yellow-900 mb-2">Personalize Your Impact</h3>
-          <p className="text-yellow-700 font-medium">Take our quick survey to get personalized challenges and initiative recommendations matching your interests.</p>
+          <h3 className="text-2xl font-bold text-yellow-900 mb-2">{t('home.survey.title')}</h3>
+          <p className="text-yellow-700 font-medium">{t('home.survey.description')}</p>
         </div>
         <button 
           onClick={onTakeSurvey}
           className="bg-yellow-500 text-white px-8 py-4 rounded-2xl font-bold whitespace-nowrap hover:bg-yellow-600 transition-all shadow-lg shadow-yellow-200"
         >
-          Take Survey
+          {t('home.survey.button')}
         </button>
       </section>
 
@@ -125,7 +127,7 @@ export function HomeTab({
               <div className="bg-white p-3 rounded-2xl shadow-sm text-green-700">
                 <Sparkles size={24} />
               </div>
-              <h3 className="text-2xl font-bold text-green-900">Daily Eco Tip</h3>
+              <h3 className="text-2xl font-bold text-green-900">{t('home.tip.title')}</h3>
             </div>
             {isTipLoading ? (
               <div className="animate-pulse flex flex-col gap-3">
@@ -143,7 +145,7 @@ export function HomeTab({
               className="mt-8 text-sm font-bold text-green-700 hover:text-green-800 flex items-center gap-2 transition-colors"
             >
               <RefreshCw size={16} className={isTipLoading ? "animate-spin" : ""} />
-              Get another tip
+              {t('home.tip.refresh')}
             </button>
           </div>
         </div>

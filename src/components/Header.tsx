@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Leaf, Menu, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '../lib/utils';
 import { useAuth } from '../hooks';
+import { LanguageSwitcher } from '../components';
 
 interface HeaderProps {
   activeTab: string;
@@ -15,12 +17,14 @@ interface HeaderProps {
 
 export function Header({ activeTab, onTabChange, onLogout, onSignInClick, isMenuOpen, setIsMenuOpen }: HeaderProps) {
   const { user, isAdmin, greenHours } = useAuth();
+  const { t } = useTranslation();
+  
   const navItems = [
-    { id: "home", label: "Home" },
-    { id: "action", label: "Action Center" },
-    { id: "community", label: "Community" },
-    { id: "portfolio", label: "Portfolio" },
-    { id: "profile", label: "Profile" }
+    { id: "home", label: t('nav.home') },
+    { id: "action", label: t('nav.action') },
+    { id: "community", label: t('nav.community') },
+    { id: "portfolio", label: t('nav.portfolio') },
+    { id: "profile", label: t('nav.profile') }
   ];
 
   const handleTabClick = (item: string) => {
@@ -61,10 +65,12 @@ export function Header({ activeTab, onTabChange, onLogout, onSignInClick, isMenu
                 </button>
               ))}
               <div className="h-8 w-px bg-gray-200 mx-2" />
+              <LanguageSwitcher />
+              <div className="h-8 w-px bg-gray-200 mx-2" />
               {user ? (
-                <div className="flex items-center gap-3 bg-gray-50 px-4 py-2 rounded-2xl border border-gray-100 cursor-pointer hover:bg-gray-100 transition-colors" onClick={onLogout} title="Click to log out">
+                <div className="flex items-center gap-3 bg-gray-50 px-4 py-2 rounded-2xl border border-gray-100 cursor-pointer hover:bg-gray-100 transition-colors" onClick={onLogout} title={t('common.logout')}>
                   <div className="text-right">
-                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider leading-none">Green Hours</p>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider leading-none">{t('common.points')}</p>
                     <p className="text-sm font-bold text-green-700 leading-none mt-1">{greenHours}</p>
                   </div>
                   {user.photoURL ? (
@@ -80,13 +86,14 @@ export function Header({ activeTab, onTabChange, onLogout, onSignInClick, isMenu
                   onClick={onSignInClick}
                   className="bg-green-700 text-white px-6 py-2 rounded-xl text-sm font-bold shadow-md hover:bg-green-800 transition-colors"
                 >
-                  Sign In
+                  {t('common.signin')}
                 </button>
               )}
             </div>
 
             {/* Mobile Menu Button */}
-            <div className="lg:hidden">
+            <div className="lg:hidden flex items-center gap-2">
+              <LanguageSwitcher />
               <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-2 text-gray-600">
                 {isMenuOpen ? <X /> : <Menu />}
               </button>
@@ -125,7 +132,7 @@ export function Header({ activeTab, onTabChange, onLogout, onSignInClick, isMenu
                   }}
                   className="text-left text-lg font-bold p-4 rounded-2xl text-green-700 bg-green-50 mt-2"
                 >
-                  Sign In
+                  {t('common.signin')}
                 </button>
               )}
               {user && (
@@ -136,7 +143,7 @@ export function Header({ activeTab, onTabChange, onLogout, onSignInClick, isMenu
                   }}
                   className="text-left text-lg font-bold p-4 rounded-2xl text-red-600 hover:bg-red-50 mt-2"
                 >
-                  Log Out
+                  {t('common.logout')}
                 </button>
               )}
             </div>

@@ -4,6 +4,7 @@
  */
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { auth, logOut } from "./firebase";
 import { AnimatePresence } from "motion/react";
 
@@ -38,6 +39,7 @@ import {
 } from './hooks';
 
 export default function App() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("home");
   const [subTabAction, setSubTabAction] = useState("initiatives");
   const [subTabCommunity, setSubTabCommunity] = useState("feed");
@@ -139,9 +141,9 @@ export default function App() {
             <div className="space-y-6">
               <div className="flex gap-2 p-1 bg-gray-100 rounded-xl overflow-x-auto hide-scrollbar sticky top-20 z-40 shadow-sm border border-gray-200">
                 {[
-                  {id: 'initiatives', label: 'Initiatives'},
-                  {id: 'training', label: 'Eco-Academy'},
-                  {id: 'calculator', label: 'Carbon Calculator'}
+                  {id: 'initiatives', label: t('nav.initiatives')},
+                  {id: 'training', label: t('nav.academy')},
+                  {id: 'calculator', label: t('nav.calculator')}
                 ].map(tab => (
                   <button key={tab.id} onClick={() => setSubTabAction(tab.id)} className={`px-5 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap transition-all flex-1 ${subTabAction === tab.id ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>
                     {tab.label}
@@ -180,8 +182,8 @@ export default function App() {
             <div className="space-y-6">
               <div className="flex gap-2 p-1 bg-gray-100 rounded-xl overflow-x-auto hide-scrollbar sticky top-20 z-40 shadow-sm border border-gray-200">
                 {[
-                  {id: 'feed', label: 'Global Challenges'},
-                  {id: 'leaderboard', label: 'Leaderboard'}
+                  {id: 'feed', label: t('nav.challenges')},
+                  {id: 'leaderboard', label: t('nav.leaderboard')}
                 ].map(tab => (
                   <button key={tab.id} onClick={() => setSubTabCommunity(tab.id)} className={`px-5 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap transition-all flex-1 ${subTabCommunity === tab.id ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>
                     {tab.label}
@@ -212,8 +214,8 @@ export default function App() {
             <div className="space-y-6">
               <div className="flex gap-2 p-1 bg-gray-100 rounded-xl overflow-x-auto hide-scrollbar sticky top-20 z-40 shadow-sm border border-gray-200">
                 {[
-                  {id: 'stats', label: 'My Impact'},
-                  {id: 'rewards', label: 'Rewards Hub'}
+                  {id: 'stats', label: t('nav.impact')},
+                  {id: 'rewards', label: t('nav.rewards')}
                 ].map(tab => (
                   <button key={tab.id} onClick={() => setSubTabPortfolio(tab.id)} className={`px-5 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap transition-all flex-1 ${subTabPortfolio === tab.id ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>
                     {tab.label}
@@ -240,11 +242,11 @@ export default function App() {
             <div className="space-y-6">
               <div className="flex gap-2 p-1 bg-gray-100 rounded-xl overflow-x-auto hide-scrollbar sticky top-20 z-40 shadow-sm border border-gray-200 max-w-3xl mx-auto">
                 <button onClick={() => setSubTabProfile('guide')} className={`px-5 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap transition-all flex-1 ${subTabProfile === 'guide' ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>
-                  Guide
+                  {t('nav.guide')}
                 </button>
                 {isAdmin && (
                   <button onClick={() => setSubTabProfile('admin')} className={`px-5 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap transition-all flex-1 ${subTabProfile === 'admin' ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>
-                    Admin Panel
+                    {t('nav.admin')}
                   </button>
                 )}
               </div>

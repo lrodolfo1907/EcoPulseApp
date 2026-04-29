@@ -15,3 +15,4 @@ export * from './SurveyModal';
 export * from './LeaderboardTab';
 export * from './RewardsTab';
 export * from './OnboardingTab';
+export { default as LanguageSwitcher } from './LanguageSwitcher';
