@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import nodemailer from "nodemailer";
 import fs from "fs";
 import { GoogleGenAI } from "@google/genai";
+import rateLimit from "express-rate-limit";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -234,7 +235,14 @@ async function startServer() {
       app.use(express.static(distPath, { index: false }));
     }
 
-    app.get("*", (req, res) => {
+    const spaFallbackLimiter = rateLimit({
+      windowMs: 15 * 60 * 1000,
+      max: 100,
+      standardHeaders: true,
+      legacyHeaders: false,
+    });
+
+    app.get("*", spaFallbackLimiter, (req, res) => {
       if (req.path.startsWith("/assets/") || req.path.includes(".")) {
         return res.status(404).send("Not found");
       }
