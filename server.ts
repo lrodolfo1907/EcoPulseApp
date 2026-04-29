@@ -25,11 +25,12 @@ function getGenAI() {
 
 async function startServer() {
   const app = express();
-  const PORT = Number(process.env.PORT) || 3000;
+  const envPort = process.env.PORT ? Number(process.env.PORT) : null;
+  const PORT = envPort || 3000;
   const isProduction = process.env.NODE_ENV === "production";
 
   console.log(`[EcoPulse] Mode: ${isProduction ? "PRODUCTION" : "DEVELOPMENT"}`);
-  console.log(`[EcoPulse] Port: ${PORT}`);
+  console.log(`[EcoPulse] Base Port: ${PORT}`);
 
   app.use(express.json());
 
@@ -268,9 +269,21 @@ async function startServer() {
     });
   }
 
+  // Listen on the primary port
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`[EcoPulse] Server running on http://localhost:${PORT}`);
   });
+
+  // AIS Proxy Fallback: If primary port is not 3000, also listen on 3000
+  if (PORT !== 3000) {
+    try {
+      app.listen(3000, "0.0.0.0", () => {
+        console.log(`[EcoPulse] Also listening on http://localhost:3000 (AIS Proxy Fallback)`);
+      });
+    } catch (err) {
+      console.warn(`[EcoPulse] Could not start fallback listener on port 3000:`, err);
+    }
+  }
 }
 
 startServer();
