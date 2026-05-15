@@ -84,14 +84,14 @@ export function HomeTab({
       {/* Survey Banner */}
       <section className="bg-yellow-50 rounded-[2.5rem] p-8 border border-yellow-100 flex flex-col xl:flex-row items-center justify-between gap-6 shadow-sm">
         <div>
-          <h3 className="text-2xl font-bold text-yellow-900 mb-2">{t('home.survey.title')}</h3>
-          <p className="text-yellow-700 font-medium">{t('home.survey.description')}</p>
+          <h3 className="text-2xl font-bold text-yellow-900 mb-2">{t('survey.title')}</h3>
+          <p className="text-yellow-700 font-medium">{t('survey.description')}</p>
         </div>
         <button 
           onClick={onTakeSurvey}
           className="bg-yellow-500 text-white px-8 py-4 rounded-2xl font-bold whitespace-nowrap hover:bg-yellow-600 transition-all shadow-lg shadow-yellow-200"
         >
-          {t('home.survey.button')}
+          {t('survey.button')}
         </button>
       </section>
 
