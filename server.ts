@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 import nodemailer from "nodemailer";
 import fs from "fs";
 import { GoogleGenAI } from "@google/genai";
-import rateLimit from "express-rate-limit";
+import { rateLimit } from "express-rate-limit";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,6 +31,20 @@ async function startServer() {
 
   console.log(`[EcoPulse] Mode: ${isProduction ? "PRODUCTION" : "DEVELOPMENT"}`);
   console.log(`[EcoPulse] Env PORT: ${envPort}`);
+
+  // Trust proxy for rate limiting (important for Cloud Run)
+  app.set('trust proxy', 1);
+
+  const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+    standardHeaders: 'draft-7', // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    message: { error: "Too many requests, please try again later." }
+  });
+
+  // Apply the rate limiting middleware to all requests
+  app.use(limiter);
 
   app.use(express.json());
 
@@ -235,14 +249,7 @@ async function startServer() {
       app.use(express.static(distPath, { index: false }));
     }
 
-    const spaFallbackLimiter = rateLimit({
-      windowMs: 15 * 60 * 1000,
-      max: 100,
-      standardHeaders: true,
-      legacyHeaders: false,
-    });
-
-    app.get("*", spaFallbackLimiter, (req, res) => {
+    app.get("*", (req, res) => {
       if (req.path.startsWith("/assets/") || req.path.includes(".")) {
         return res.status(404).send("Not found");
       }
